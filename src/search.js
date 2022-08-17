@@ -145,9 +145,9 @@ export default async (req, res) => {
 
     const response = await fetch(
       [
-        "api.telegram.org",
-        "telegra.ph",
-        "t.me",
+        // "api.telegram.org",
+        // "telegra.ph",
+        // "t.me",
         "discord.com",
         "cdn.discordapp.com",
         "media.discordapp.net",
