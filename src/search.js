@@ -132,11 +132,13 @@ export default async (req, res) => {
   }
 
   let searchFile = new Buffer.alloc(0);
+  console.log(JSON.stringify(req));
   if (req.query.url) {
     // console.log(req.query.url);
     try {
       new URL(req.query.url);
     } catch (e) {
+      console.log(e);
       await logAndDequeue(knex, redis, uid, priority, 400);
       return res.status(400).json({
         error: `Invalid image url ${req.query.url}`,
@@ -158,6 +160,7 @@ export default async (req, res) => {
         ? req.query.url
         : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`
     ).catch((e) => {
+      console.log(e);
       return { status: 400 };
     });
     if (response.status >= 400) {
