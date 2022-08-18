@@ -132,7 +132,7 @@ export default async (req, res) => {
   }
 
   let searchFile = new Buffer.alloc(0);
-  console.log(JSON.stringify(req));
+  console.log(req);
   if (req.query.url) {
     // console.log(req.query.url);
     try {
