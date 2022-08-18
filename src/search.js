@@ -132,7 +132,6 @@ export default async (req, res) => {
   }
 
   let searchFile = new Buffer.alloc(0);
-  console.log(req);
   if (req.query.url) {
     // console.log(req.query.url);
     try {
@@ -163,7 +162,6 @@ export default async (req, res) => {
       console.log(e);
       return { status: 400 };
     });
-    console.log(response);
     if (response.status >= 400) {
       await logAndDequeue(knex, redis, uid, priority, 400);
       return res.status(response.status).json({
