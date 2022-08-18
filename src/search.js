@@ -163,6 +163,7 @@ export default async (req, res) => {
       console.log(e);
       return { status: 400 };
     });
+    console.log(response);
     if (response.status >= 400) {
       await logAndDequeue(knex, redis, uid, priority, 400);
       return res.status(response.status).json({
@@ -256,6 +257,7 @@ export default async (req, res) => {
         searchImage = cv.imencode(".jpg", image.getRegion(new cv.Rect(x, y, w, h)));
       }
     } catch (e) {
+      console.log(e);
       await logAndDequeue(knex, redis, uid, priority, 400);
       return res.status(400).json({
         error: "OpenCV: Failed to detect and cut borders",
