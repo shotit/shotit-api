@@ -269,11 +269,13 @@ export default async (req, res) => {
   try {
     solrResponse = await search(searchImage, candidates, Number(req.query.anilistID));
   } catch (e) {
+    console.log(e);
     await logAndDequeue(knex, redis, uid, priority, 503);
     return res.status(503).json({
       error: `Error: Database is not responding`,
     });
   }
+  console.log(solrResponse);
   if (solrResponse.find((e) => e.status >= 500)) {
     const r = solrResponse.find((e) => e.status >= 500);
     await logAndDequeue(knex, redis, uid, priority, r.status);
