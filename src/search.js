@@ -7,29 +7,49 @@ import fs from "fs-extra";
 import aniep from "aniep";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
-import getSolrCoreList from "./lib/get-solr-core-list.js";
+// import getSolrCoreList from "./lib/get-solr-core-list.js";
 
-const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
+// const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
+const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, SEARCHER_URL } = process.env;
 
-const search = (image, candidates, anilistID) =>
-  Promise.all(
-    getSolrCoreList().map((coreURL) =>
-      fetch(
-        `${coreURL}/lireq?${[
-          "field=cl_ha",
-          "ms=false",
-          `accuracy=${TRACE_ACCURACY}`,
-          `candidates=${candidates}`,
-          "rows=30",
-          anilistID ? `fq=id:${anilistID}/*` : "",
-        ].join("&")}`,
-        {
-          method: "POST",
-          body: image,
-        }
-      )
-    )
-  );
+/* Solr Search */
+// const search = (image, candidates, anilistID) =>
+//   Promise.all(
+//     getSolrCoreList().map((coreURL) =>
+//       fetch(
+//         `${coreURL}/lireq?${[
+//           "field=cl_ha",
+//           "ms=false",
+//           `accuracy=${TRACE_ACCURACY}`,
+//           `candidates=${candidates}`,
+//           "rows=30",
+//           anilistID ? `fq=id:${anilistID}/*` : "",
+//         ].join("&")}`,
+//         {
+//           method: "POST",
+//           body: image,
+//         }
+//       )
+//     )
+//   );
+
+/* Milvus Search */
+const search = async (image) => {
+  const typeMap = {};
+  // 89504e47 would be converted to Number type by prettier, use this trick
+  typeMap[`89504e47`] = "png"; // format header feature
+  typeMap[`ffd8ffe0`] = "jpeg";
+  const ext = typeMap[image.toString("hex", 0, 4)] || "jpeg";
+  const response = await fetch(`${SEARCHER_URL}/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": `image/${ext}`,
+    },
+    body: image,
+  });
+  // use array to keep consistent like Promise.all before.
+  return [response];
+};
 
 const logAndDequeue = async (knex, redis, uid, priority, status, searchTime, accuracy) => {
   if (status === 200) {
@@ -267,7 +287,8 @@ export default async (req, res) => {
   const startTime = performance.now();
   let solrResponse = null;
   try {
-    solrResponse = await search(searchImage, candidates, Number(req.query.anilistID));
+    // solrResponse = await search(searchImage, candidates, Number(req.query.anilistID));
+    solrResponse = await search(searchImage);
   } catch (e) {
     console.log(e);
     await logAndDequeue(knex, redis, uid, priority, 503);
@@ -275,7 +296,6 @@ export default async (req, res) => {
       error: `Error: Database is not responding`,
     });
   }
-  console.log(solrResponse);
   if (solrResponse.find((e) => e.status >= 500)) {
     const r = solrResponse.find((e) => e.status >= 500);
     await logAndDequeue(knex, redis, uid, priority, r.status);
@@ -290,7 +310,8 @@ export default async (req, res) => {
     // found cluster has more candidates than expected
     // search again with increased candidates count
     candidates = maxRawDocsCount;
-    solrResponse = await search(searchImage, candidates, Number(req.query.anilistID));
+    // solrResponse = await search(searchImage, candidates, Number(req.query.anilistID));
+    solrResponse = await search(searchImage);
     if (solrResponse.find((e) => e.status >= 500)) {
       const r = solrResponse.find((e) => e.status >= 500);
       await logAndDequeue(knex, redis, uid, priority, r.status);
@@ -323,7 +344,8 @@ export default async (req, res) => {
   }
 
   result = result
-    .reduce((list, { d, id }) => {
+    // .reduce((list, { d, id }) => {
+    .reduce((list, { score: d, id }) => {
       // merge nearby results within 5 seconds in the same filename
       const anilist_id = Number(id.split("/")[0]);
       const filename = id.split("/")[1];
@@ -351,7 +373,8 @@ export default async (req, res) => {
         return list;
       }
     }, [])
-    .sort((a, b) => a.d - b.d) // sort in ascending order of difference
+    // .sort((a, b) => a.d - b.d) // sort in ascending order of difference
+    .sort((a, b) => b.d - a.d) // sort in ascending order of difference
     .slice(0, 10); // return only top 10 results
 
   const window = 60 * 60; // 3600 seconds
@@ -375,7 +398,8 @@ export default async (req, res) => {
       episode: aniep(filename),
       from,
       to,
-      similarity: (100 - d) / 100,
+      // similarity: (100 - d) / 100,
+      similarity: d,
       video: `${TRACE_MEDIA_URL}/video/${anilist_id}/${encodeURIComponent(filename)}?${[
         `t=${mid}`,
         `now=${now}`,
