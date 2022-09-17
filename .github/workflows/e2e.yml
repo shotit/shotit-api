@@ -33,15 +33,72 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: run liresolr
+      - name: Run liresolr
+        env:
+            CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           sudo mkdir /tmp/solr
           sudo chown 8983:8983 /tmp/solr
-          docker run -d -p 8983:8983 -v /tmp/solr:/var/solr soruly/liresolr:latest solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
+          docker run -d -p 8983:8983 -v /tmp/solr:/var/solr \
+          --network $CONTAINER_NETWORK \
+          ghcr.io/leslie-wong-h/liresolr:latest solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
       - name: Install ffmpeg
         run: |
           sudo apt-get update -y
           sudo apt-get install -y ffmpeg --fix-missing
+      - name: Docker run etcd
+        env:
+            CONTAINER_NETWORK: ${{ job.container.network }}
+        run: |
+          sudo mkdir /tmp/etcd
+          docker run -d --name etcd -v /tmp/etcd:/etcd \
+          --network $CONTAINER_NETWORK \
+          -e ETCD_AUTO_COMPACTION_MODE=revision \
+          -e ETCD_AUTO_COMPACTION_RETENTION=1000 \
+          -e ETCD_QUOTA_BACKEND_BYTES=4294967296 \
+          quay.io/coreos/etcd:v3.5.0 \
+          etcd -advertise-client-urls=http://127.0.0.1:2379 \
+          -listen-client-urls http://0.0.0.0:2379 \
+          --data-dir /etcd
+      - name: Docker run minio
+        env:
+            CONTAINER_NETWORK: ${{ job.container.network }}
+        run: |
+          sudo mkdir /tmp/minio
+          docker run -d --name minio -v /tmp/minio:/minio_data \
+          --network $CONTAINER_NETWORK \
+          -e MINIO_ACCESS_KEY=minioadmin \
+          -e MINIO_SECRET_KEY=minioadmin \
+          minio/minio:RELEASE.2022-03-17T06-34-49Z \
+          minio server /minio_data
+      - name: Docker run milvus-standalone
+        env:
+            CONTAINER_NETWORK: ${{ job.container.network }}
+        run: |
+          sudo mkdir /tmp/milvus
+          docker run -d --name standalone -v /tmp/milvus:/var/lib/milvus \
+          --network $CONTAINER_NETWORK \
+          -p 19530:19530 -p 9091:9091 \
+          -e ETCD_ENDPOINTS=etcd:2379 \
+          -e MINIO_ADDRESS=minio:9000 \
+          milvusdb/milvus:v2.1.1 \
+          milvus run standalone
+      - name: Docker run searcher
+        env:
+            CONTAINER_NETWORK: ${{ job.container.network }}
+        run: |
+          docker run -d --name searcher \
+          --network $CONTAINER_NETWORK \
+          -p 19531:19531 \
+          -e TRACE_ALGO=cl \
+          -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
+          -e SEARCHER_URL=http://172.17.0.1:19531 \
+          -e MILVUS_URL=172.17.0.1:19530 \
+          ghcr.io/leslie-wong-h/trace.moe-worker-searcher:latest
+      # Sleep for 30 seconds to wait for Milvus Proxy and Searcher ready
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash          
       - run: npm ci
       - run: npm run jest
         env:
@@ -57,6 +114,8 @@ jobs:
           SOLA_SOLR_SIZE: 1
           TRACE_MEDIA_URL: http://127.0.0.1
           TRACE_MEDIA_SALT: TRACE_MEDIA_SALT
+          SEARCHER_URL: http://172.17.0.1:19531
+          MILVUS_URL: 172.17.0.1:19530
           TRACE_ACCURACY: 0.02
           TRACE_API_SALT: YOUR_TRACE_API_SALT
           TRACE_API_SECRET: TRACE_API_SECRET
