@@ -42,22 +42,21 @@ jobs:
           ETCD_AUTO_COMPACTION_RETENTION: 1000
           ETCD_QUOTA_BACKEND_BYTES: 4294967296
         volumes:
-          - -./volumes/etcd:/etcd
+          - ${{GITHUB_WORKSPACE}}/volumes/etcd:/etcd
       minio:
         image: minio/minio:RELEASE.2022-03-17T06-34-49Z
         env:
           MINIO_ACCESS_KEY: minioadmin
           MINIO_SECRET_KEY: minioadmin
         volumes:
-          - -./volumes/minio:/minio_data
+          -  ${{GITHUB_WORKSPACE}}/volumes/minio:/minio_data
       standalone:
         image: milvusdb/milvus:v2.1.1
         env:
           ETCD_ENDPOINTS: etcd:2379
           MINIO_ADDRESS: minio:9000
         volumes:
-          - -./volumes/milvus:/var/lib/milvus
-          - -./milvus.yaml:/milvus/configs/milvus.yaml
+          -  ${{GITHUB_WORKSPACE}}/volumes/milvus:/var/lib/milvus
         ports:
           - 19530:19530
           - 9091:9091
