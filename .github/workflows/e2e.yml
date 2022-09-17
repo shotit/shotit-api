@@ -41,7 +41,7 @@ jobs:
           sudo chown 8983:8983 /tmp/solr
           docker run -d -p 8983:8983 -v /tmp/solr:/var/solr \
           --network $CONTAINER_NETWORK \
-          soruly/liresolr:latest solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
+          ghcr.io/leslie-wong-h/liresolr:latest solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
       - name: Install ffmpeg
         run: |
           sudo apt-get update -y
