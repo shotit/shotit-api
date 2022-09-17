@@ -34,7 +34,7 @@ jobs:
           TRACE_ALGO: cl
           SOLA_SOLR_LIST: http://127.0.0.1:8983/solr/
           SEARCHER_URL: http://127.0.0.1:19531
-          MILVUS_URL: 172.17.0.1:19530
+          MILVUS_URL: 127.0.0.1:19530
 
     steps:
       - uses: actions/checkout@v2
