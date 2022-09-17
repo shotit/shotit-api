@@ -80,8 +80,8 @@ beforeAll(async () => {
     const milvusClient = new MilvusClient(MILVUS_URL);
 
     const params = {
-      collection_name: "Test",
-      description: "Test Index Data Collection",
+      collection_name: "trace_moe",
+      description: "Trace.moe Index Data Collection",
       fields: [
         {
           name: "cl_ha",
@@ -116,12 +116,12 @@ beforeAll(async () => {
       ],
     };
 
-    await milvusClient.collectionManager.releaseCollection({ collection_name: "Test" });
+    await milvusClient.collectionManager.releaseCollection({ collection_name: "trace_moe" });
 
     await milvusClient.collectionManager.createCollection(params);
 
     await milvusClient.dataManager.insert({
-      collection_name: "Test",
+      collection_name: "trace_moe",
       fields_data: [
         {
           id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
@@ -188,7 +188,7 @@ beforeAll(async () => {
       ],
     });
 
-    await milvusClient.dataManager.flushSync({ collection_names: ["Test"] });
+    await milvusClient.dataManager.flushSync({ collection_names: ["trace_moe"] });
 
     const index_params = {
       metric_type: "IP",
@@ -197,16 +197,18 @@ beforeAll(async () => {
     };
 
     await milvusClient.indexManager.createIndex({
-      collection_name: "Test",
+      collection_name: "trace_moe",
       field_name: "cl_ha",
       extra_params: index_params,
     });
 
-    await milvusClient.collectionManager.loadCollectionSync({
-      collection_name: "Test",
-    });
+    // await milvusClient.collectionManager.loadCollectionSync({
+    //   collection_name: "trace_moe",
+    // });
   };
   await initializeAndInsertMilvusCollection();
+  // Wait for another 30 seconds for milvus indexer ready
+  await new Promise((resolve) => setTimeout(resolve, 30000));
   await app.locals.knex(TRACE_ALGO).truncate();
   await app.locals.knex(TRACE_ALGO).insert({
     path: "21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4",
