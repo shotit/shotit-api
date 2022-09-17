@@ -214,18 +214,17 @@ beforeAll(async () => {
     console.log("Wait for another 30 seconds for milvus indexer ready");
     await new Promise((resolve) => setTimeout(resolve, 30000));
     console.log("30 seconds passed");
-
-    await app.locals.knex(TRACE_ALGO).truncate();
-    await app.locals.knex(TRACE_ALGO).insert({
-      path: "21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4",
-      status: "LOADED",
-      created: new Date(),
-      updated: new Date(),
-    });
   } catch (error) {
     console.log("catch initializeAndInsertMilvusCollection error");
     console.log(error);
   }
+  await app.locals.knex(TRACE_ALGO).truncate();
+  await app.locals.knex(TRACE_ALGO).insert({
+    path: "21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4",
+    status: "LOADED",
+    created: new Date(),
+    updated: new Date(),
+  });
 });
 
 afterAll(async () => {
