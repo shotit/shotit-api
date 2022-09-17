@@ -79,6 +79,10 @@ jobs:
           -e MINIO_ADDRESS=minio:9000 \
           milvusdb/milvus:v2.1.1 \
           milvus run standalone
+      # Sleep for 30 seconds to wait for Milvus Proxy ready
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
       - run: npm ci
       - run: npm run jest
         env:
