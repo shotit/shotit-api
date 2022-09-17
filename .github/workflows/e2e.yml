@@ -71,7 +71,7 @@ jobs:
         run: |
           sudo mkdir /tmp/minio
           docker run -d --name minio -v /tmp/minio:/minio_data \
-          --network $CONTAINER_NETWORK \         
+          --network $CONTAINER_NETWORK \
           -e MINIO_ACCESS_KEY=minioadmin \
           -e MINIO_SECRET_KEY=minioadmin \
           minio/minio:RELEASE.2022-03-17T06-34-49Z \
@@ -82,7 +82,7 @@ jobs:
         run: |
           sudo mkdir /tmp/milvus
           docker run -d --name standalone -v /tmp/milvus:/var/lib/milvus \
-          --network $CONTAINER_NETWORK \       
+          --network $CONTAINER_NETWORK \
           -p 19530:19530 -p 9091:9091 \
           -e ETCD_ENDPOINTS=etcd:2379 \
           -e MINIO_ADDRESS=minio:9000 \
