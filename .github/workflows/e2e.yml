@@ -92,7 +92,7 @@ jobs:
           -p 19531:19531 \
           -e TRACE_ALGO=cl \
           -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
-          -e SEARCHER_URL=http://127.0.0.1:19531 \
+          -e SEARCHER_URL=http://172.17.0.1:19531 \
           -e MILVUS_URL=172.17.0.1:19530 \
           ghcr.io/leslie-wong-h/trace.moe-worker-searcher:latest
       # Sleep for 30 seconds to wait for Milvus Proxy and Searcher ready
@@ -114,7 +114,7 @@ jobs:
           SOLA_SOLR_SIZE: 1
           TRACE_MEDIA_URL: http://127.0.0.1
           TRACE_MEDIA_SALT: TRACE_MEDIA_SALT
-          SEARCHER_URL: http://127.0.0.1:19531
+          SEARCHER_URL: http://172.17.0.1:19531
           MILVUS_URL: 172.17.0.1:19530
           TRACE_ACCURACY: 0.02
           TRACE_API_SALT: YOUR_TRACE_API_SALT
