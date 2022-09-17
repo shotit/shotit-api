@@ -210,10 +210,6 @@ beforeAll(async () => {
     // });
 
     console.log("initializeAndInsertMilvusCollection ends");
-    // Wait for another 30 seconds for milvus indexer ready
-    console.log("Wait for another 30 seconds for milvus indexer ready");
-    await new Promise((resolve) => setTimeout(resolve, 30000));
-    console.log("30 seconds passed");
   } catch (error) {
     console.log("catch initializeAndInsertMilvusCollection error");
     console.log(error);
