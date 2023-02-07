@@ -50,8 +50,8 @@ test("GET /status", async () => {
   const rowCount = response.body?.data.row_count;
   expect(errorCode).toBe("Success");
   // Refer to search.test.js "milvusClient.dataManager.insert"
-  // The number should be 2.
-  expect(rowCount).toBeGreaterThanOrEqual(2);
+  // The number should be 2, string type.
+  expect(rowCount).toBe("2");
 });
 
 test("GET /status?id=a", async () => {
