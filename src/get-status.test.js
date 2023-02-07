@@ -49,7 +49,9 @@ test("GET /status", async () => {
   const errorCode = response.body?.status.error_code;
   const rowCount = response.body?.data.row_count;
   expect(errorCode).toBe("Success");
-  expect(rowCount).toBeGreaterThanOrEqual(0);
+  // Refer to search.test.js "milvusClient.dataManager.insert"
+  // The number should be 2.
+  expect(rowCount).toBeGreaterThanOrEqual(2);
 });
 
 test("GET /status?id=a", async () => {
