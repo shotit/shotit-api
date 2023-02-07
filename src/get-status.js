@@ -1,6 +1,8 @@
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
+import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 
-const { SOLA_SOLR_LIST, TRACE_ALGO } = process.env;
+// const { SOLA_SOLR_LIST, TRACE_ALGO } = process.env;
+const { TRACE_ALGO, MILVUS_URL } = process.env;
 
 export default async (req, res) => {
   const knex = req.app.locals.knex;
@@ -18,20 +20,27 @@ export default async (req, res) => {
   }
 
   try {
-    const statusList = (
-      await Promise.all(
-        SOLA_SOLR_LIST.split(",").map((solrUrl) =>
-          fetch(`${solrUrl}admin/cores?wt=json`)
-            .then((res) => res.json())
-            .then(({ status }) => ({ solrUrl, cores: Object.values(status) }))
-            .catch((e) => res.status(503))
-        )
-      )
-    ).reduce((acc, cur) => {
-      acc[cur.solrUrl] = cur.cores;
-      return acc;
-    }, {});
-    return res.json(statusList);
+    // const statusList = (
+    //   await Promise.all(
+    //     SOLA_SOLR_LIST.split(",").map((solrUrl) =>
+    //       fetch(`${solrUrl}admin/cores?wt=json`)
+    //         .then((res) => res.json())
+    //         .then(({ status }) => ({ solrUrl, cores: Object.values(status) }))
+    //         .catch((e) => res.status(503))
+    //     )
+    //   )
+    // ).reduce((acc, cur) => {
+    //   acc[cur.solrUrl] = cur.cores;
+    //   return acc;
+    // }, {});
+    // return res.json(statusList);
+
+    /* Use Milvus statistics */
+    const milvusClient = new MilvusClient(MILVUS_URL);
+    const entitiesCount = await milvusClient.collectionManager.getCollectionStatistics({
+      collection_name: "trace_moe",
+    });
+    return res.json(entitiesCount);
   } catch (e) {
     console.log(e);
     return res.status(503);
