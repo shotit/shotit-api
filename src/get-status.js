@@ -37,10 +37,37 @@ export default async (req, res) => {
 
     /* Use Milvus statistics */
     const milvusClient = new MilvusClient(MILVUS_URL);
-    const entitiesCount = await milvusClient.collectionManager.getCollectionStatistics({
+
+    const collectionStatistics = await milvusClient.collectionManager.getCollectionStatistics({
       collection_name: "trace_moe",
     });
-    return res.json(entitiesCount);
+    const rowCount = collectionStatistics?.data.row_count;
+
+    /* 
+      Formula: https://milvus.io/tools/sizing/
+      Parameters: 
+        Number of vectors (Million) - 1
+        Dimensions - 100 
+        Index type - IVF_SQ8
+        M (Maximum degree of the node) nlist - 128
+        Segment size - 512MB
+      Result:
+        Memory 286.3 M
+    */
+    const totalSize = 286.3 * (Number(rowCount) / 100_000_000) * 1024 * 1024 * 1024;
+
+    const collectionStatus = await milvusClient.collectionManager.showCollections({
+      type: 1,
+      collection_names: ["trace_moe"],
+    });
+    const lastModified = Number(collectionStatus?.data[0].timestamp);
+
+    return res.json({
+      errorCode: "Success",
+      rowCount: rowCount,
+      totalSize: totalSize,
+      lastModified: lastModified,
+    });
   } catch (e) {
     console.log(e);
     return res.status(503);
