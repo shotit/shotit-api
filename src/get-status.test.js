@@ -46,12 +46,16 @@ test("GET /status", async () => {
   // expect(lastModified).toBeInstanceOf(Date);
 
   /* Use Milvus Statistics */
-  const errorCode = response.body?.status.error_code;
-  const rowCount = response.body?.data.row_count;
+  const errorCode = response.body?.errorCode;
+  const rowCount = response.body?.rowCount;
+  const totalSize = response.body?.totalSize;
+  const lastModified = new Date(response.body?.lastModified);
   expect(errorCode).toBe("Success");
   // Refer to search.test.js "milvusClient.dataManager.insert"
   // The number should be 2, string type.
   expect(rowCount).toBe("2");
+  expect(totalSize).toBeGreaterThanOrEqual(0);
+  expect(lastModified).toBeInstanceOf(Date);
 });
 
 test("GET /status?id=a", async () => {
