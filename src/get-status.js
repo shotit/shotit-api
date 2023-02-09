@@ -44,6 +44,7 @@ export default async (req, res) => {
     const rowCount = collectionStatistics?.data.row_count;
 
     /* 
+      Total Size in Bytes
       Formula: https://milvus.io/tools/sizing/
       Parameters: 
         Number of vectors (Million) - 1
@@ -54,7 +55,7 @@ export default async (req, res) => {
       Result:
         Memory 286.3 M
     */
-    const totalSize = 286.3 * (Number(rowCount) / 100_000_000) * 1024 * 1024;
+    const totalSize = 286.3 * (Number(rowCount) / 1_000_000) * 1024 * 1024;
 
     const collectionStatus = await milvusClient.collectionManager.showCollections({
       type: 1,
