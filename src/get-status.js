@@ -54,7 +54,7 @@ export default async (req, res) => {
       Result:
         Memory 286.3 M
     */
-    const totalSize = 286.3 * (Number(rowCount) / 100_000_000) * 1024 * 1024 * 1024;
+    const totalSize = 286.3 * (Number(rowCount) / 100_000_000) * 1024 * 1024;
 
     const collectionStatus = await milvusClient.collectionManager.showCollections({
       type: 1,
