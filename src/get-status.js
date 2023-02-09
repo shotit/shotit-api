@@ -56,7 +56,7 @@ export default async (req, res) => {
     */
     const totalSize = 286.3 * (Number(rowCount) / 100_000_000) * 1024 * 1024 * 1024;
 
-    const collectionStatus = await collectionManager.showCollections({
+    const collectionStatus = await milvusClient.collectionManager.showCollections({
       type: 1,
       collection_names: ["trace_moe"],
     });
