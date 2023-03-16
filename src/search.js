@@ -430,6 +430,7 @@ export default async (req, res) => {
   }).catch((e) => {
     console.error(e);
   });
+  console.log(resultResponse);
   result = (await resultResponse.json())["result"];
 
   await fs.remove(tempSearchImagePath);
