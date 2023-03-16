@@ -424,14 +424,13 @@ export default async (req, res) => {
   await fs.outputFile(tempSearchImagePath, searchImage);
   formdata.append("target", fs.createReadStream(tempSearchImagePath));
 
-  result = await (
-    await fetch(`${REARRANGER_URL}/rearrange`, {
-      method: "POST",
-      body: formdata,
-    }).catch((e) => {
-      console.error(e);
-    })
-  ).json();
+  const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
+    method: "POST",
+    body: formdata,
+  }).catch((e) => {
+    console.error(e);
+  });
+  result = (await resultResponse.json())["result"];
 
   await fs.remove(tempSearchImagePath);
 
