@@ -418,7 +418,12 @@ export default async (req, res) => {
   // Rearrange the result according to trace.moe-rearranger
   const formdata = new FormData();
   formdata.append("candidates", JSON.stringify({ candidates: result }));
-  formdata.append("target", new Blob([searchImage], { type: "application/jpeg" }));
+
+  const tempSearchImagePath = path.join(os.tmpdir(), `searchImage${process.hrtime().join("")}.jpg`);
+  // io to disk to prevent source.on error
+  await fs.outputFile(tempSearchImagePath, searchImage);
+  formdata.append("target", fs.createReadStream(tempSearchImagePath));
+
   result = await (
     await fetch(`${REARRANGER_URL}/rearrange`, {
       method: "POST",
@@ -427,6 +432,8 @@ export default async (req, res) => {
       console.error(e);
     })
   ).json();
+
+  await fs.remove(tempSearchImagePath);
 
   if ("anilistInfo" in req.query) {
     const response = await fetch("https://graphql.anilist.co/", {
