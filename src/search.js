@@ -433,6 +433,7 @@ export default async (req, res) => {
       body: formdata,
     }).catch((e) => {
       console.error(e);
+      throw new Error("failed to fetch REARRANGER_URL");
     });
     const resultResponseJson = await resultResponse.json();
     if ("result" in resultResponseJson) {
@@ -440,7 +441,6 @@ export default async (req, res) => {
     } else {
       throw new Error("illegal result");
     }
-    result = (await resultResponse.json())["result"];
   } catch (error) {
     console.error(error);
     result = originalResult;
