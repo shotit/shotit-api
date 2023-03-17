@@ -103,6 +103,8 @@ jobs:
           --network $CONTAINER_NETWORK \
           -p 19532:19532 \
           ghcr.io/leslie-wong-h/trace.moe-rearranger:latest
+      - name: Dump rearranger logs
+        uses: jwalton/gh-docker-logs@v2          
       # Sleep for 30 seconds to wait for Milvus Proxy and Searcher ready
       - name: Sleep for 30 seconds
         run: sleep 30s
