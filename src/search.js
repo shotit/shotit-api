@@ -434,6 +434,12 @@ export default async (req, res) => {
     }).catch((e) => {
       console.error(e);
     });
+    const resultResponseJson = await resultResponse.json();
+    if ("result" in resultResponseJson) {
+      result = resultResponseJson["result"];
+    } else {
+      throw new Error("illegal result");
+    }
     result = (await resultResponse.json())["result"];
   } catch (error) {
     console.error(error);
