@@ -4,13 +4,14 @@ import path from "path";
 import child_process from "child_process";
 import fetch from "node-fetch";
 import fs from "fs-extra";
+import FormData from "form-data";
 import aniep from "aniep";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
 // const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
-const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, SEARCHER_URL } = process.env;
+const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, SEARCHER_URL, REARRANGER_URL } = process.env;
 
 /* Solr Search */
 // const search = (image, candidates, anilistID) =>
@@ -375,7 +376,7 @@ export default async (req, res) => {
     }, [])
     // .sort((a, b) => a.d - b.d) // sort in ascending order of difference
     .sort((a, b) => b.d - a.d) // sort in ascending order of difference
-    .slice(0, 10); // return only top 10 results
+    .slice(0, 15); // return only top 15 results
 
   const window = 60 * 60; // 3600 seconds
   const now = ((Date.now() / 1000 / window) | 0) * window + window;
@@ -412,6 +413,40 @@ export default async (req, res) => {
       ].join("&")}`,
     };
   });
+
+  /**
+   *  Rearrange the result according to trace.moe-rearranger
+   */
+  const formdata = new FormData();
+  formdata.append("candidates", JSON.stringify({ candidates: result }));
+
+  const tempSearchImagePath = path.join(os.tmpdir(), `searchImage${process.hrtime().join("")}.jpg`);
+  // IO to disk to prevent source.on error
+  await fs.outputFile(tempSearchImagePath, searchImage);
+  formdata.append("target", fs.createReadStream(tempSearchImagePath));
+
+  // The image link may not be a valid link to process, so make it conditional
+  const originalResult = result;
+  try {
+    const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
+      method: "POST",
+      body: formdata,
+    }).catch((e) => {
+      console.error(e);
+      throw new Error("failed to fetch REARRANGER_URL");
+    });
+    const resultResponseJson = await resultResponse.json();
+    if ("result" in resultResponseJson) {
+      result = resultResponseJson["result"];
+    } else {
+      throw new Error("illegal result");
+    }
+  } catch (error) {
+    console.error(error);
+    result = originalResult;
+  }
+
+  await fs.remove(tempSearchImagePath);
 
   if ("anilistInfo" in req.query) {
     const response = await fetch("https://graphql.anilist.co/", {
