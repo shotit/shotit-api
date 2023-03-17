@@ -414,25 +414,31 @@ export default async (req, res) => {
     };
   });
 
-  // Rearrange the result according to trace.moe-rearranger
+  /**
+   *  Rearrange the result according to trace.moe-rearranger
+   */
   const formdata = new FormData();
   formdata.append("candidates", JSON.stringify({ candidates: result }));
 
   const tempSearchImagePath = path.join(os.tmpdir(), `searchImage${process.hrtime().join("")}.jpg`);
-  // io to disk to prevent source.on error
+  // IO to disk to prevent source.on error
   await fs.outputFile(tempSearchImagePath, searchImage);
   formdata.append("target", fs.createReadStream(tempSearchImagePath));
 
-  const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
-    method: "POST",
-    body: formdata,
-  }).catch((e) => {
-    console.error(e);
-  });
-  console.log(resultResponse);
-  const jsonRes = await resultResponse.json();
-  console.log(jsonRes);
-  result = jsonRes["result"];
+  // The image link may not be a valid link to process, so make it conditional
+  const originalResult = result;
+  try {
+    const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
+      method: "POST",
+      body: formdata,
+    }).catch((e) => {
+      console.error(e);
+    });
+    result = (await resultResponse.json())["result"];
+  } catch (error) {
+    console.error(error);
+    result = originalResult;
+  }
 
   await fs.remove(tempSearchImagePath);
 
