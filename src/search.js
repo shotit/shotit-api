@@ -417,36 +417,41 @@ export default async (req, res) => {
   /**
    *  Rearrange the result according to trace.moe-rearranger
    */
-  const formdata = new FormData();
-  formdata.append("candidates", JSON.stringify({ candidates: result }));
+  if ("rearrange" in req.query) {
+    // The image link may not be a valid link to process, so make it conditional
+    const originalResult = result;
+    try {
+      const formdata = new FormData();
+      formdata.append("candidates", JSON.stringify({ candidates: result }));
 
-  const tempSearchImagePath = path.join(os.tmpdir(), `searchImage${process.hrtime().join("")}.jpg`);
-  // IO to disk to prevent source.on error
-  await fs.outputFile(tempSearchImagePath, searchImage);
-  formdata.append("target", fs.createReadStream(tempSearchImagePath));
+      const tempSearchImagePath = path.join(
+        os.tmpdir(),
+        `searchImage${process.hrtime().join("")}.jpg`
+      );
+      // IO to disk to prevent source.on error
+      await fs.outputFile(tempSearchImagePath, searchImage);
+      formdata.append("target", fs.createReadStream(tempSearchImagePath));
 
-  // The image link may not be a valid link to process, so make it conditional
-  const originalResult = result;
-  try {
-    const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
-      method: "POST",
-      body: formdata,
-    }).catch((e) => {
-      console.error(e);
-      throw new Error("failed to fetch REARRANGER_URL");
-    });
-    const resultResponseJson = await resultResponse.json();
-    if ("result" in resultResponseJson) {
-      result = resultResponseJson["result"];
-    } else {
-      throw new Error("illegal result");
+      const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
+        method: "POST",
+        body: formdata,
+      }).catch((e) => {
+        console.error(e);
+        throw new Error("failed to fetch REARRANGER_URL");
+      });
+      const resultResponseJson = await resultResponse.json();
+      if ("result" in resultResponseJson) {
+        result = resultResponseJson["result"];
+      } else {
+        throw new Error("illegal result");
+      }
+
+      await fs.remove(tempSearchImagePath);
+    } catch (error) {
+      console.error(error);
+      result = originalResult;
     }
-  } catch (error) {
-    console.error(error);
-    result = originalResult;
   }
-
-  await fs.remove(tempSearchImagePath);
 
   if ("anilistInfo" in req.query) {
     const response = await fetch("https://graphql.anilist.co/", {
