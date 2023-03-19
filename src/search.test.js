@@ -335,6 +335,28 @@ describe("without API Key", () => {
     expect(topResult.episode).toBe(1);
     expect(topResult.similarity).toBeGreaterThan(0.9);
   });
+  test("/search by image URL with rearrange", async () => {
+    const response = await request(app)
+      .get("/search?rearrange")
+      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-type"]).toMatch(/^application\/json/);
+    expect(typeof response.body.frameCount).toBe("number");
+    expect(typeof response.body.error).toBe("string");
+    expect(Array.isArray(response.body.result)).toBeTruthy();
+    const topResult = response.body.result[0];
+    expect(typeof topResult.anilist).toBe("number");
+    expect(typeof topResult.filename).toBe("string");
+    expect(typeof topResult.episode).toBe("number");
+    expect(typeof topResult.from).toBe("number");
+    expect(typeof topResult.to).toBe("number");
+    expect(typeof topResult.similarity).toBe("number");
+    expect(typeof topResult.video).toBe("string");
+    expect(typeof topResult.image).toBe("string");
+    expect(topResult.anilist).toBe(21034);
+    expect(topResult.episode).toBe(1);
+    expect(topResult.similarity).toBeGreaterThan(0.9);
+  });
   test("/search by image URL with anilistInfo", async () => {
     const response = await request(app)
       .get("/search?anilistInfo")
