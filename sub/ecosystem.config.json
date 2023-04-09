@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "shotit-api",
+      "script": "server.js",
+      "instances": 1,
+      "exec_mode": "fork"
+    }
+  ]
+}
