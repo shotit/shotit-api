@@ -1,6 +1,6 @@
 {
   "name": "shotit-api",
-  "version": "1.0.0",
+  "version": "0.9.1",
   "description": "The ultimate brain of shotit, in charge of task coordination",
   "main": "server.js",
   "type": "module",
@@ -15,7 +15,7 @@
     "format": "prettier --write \"**/*.js\"",
     "lint": "prettier --check \"**/*.js\"",
     "test": "prettier --check \"**/*.js\"",
-    "jest": "NODE_NO_WARNINGS=1 NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
+    "jest": "NODE_NO_WARNINGS=1 NODE_OPTIONS=--experimental-vm-modules jest --coverage --runInBand"
   },
   "repository": {
     "type": "git",
