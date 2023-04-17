@@ -83,8 +83,8 @@ beforeAll(async () => {
     const milvusClient = new MilvusClient(MILVUS_URL);
 
     const params = {
-      collection_name: "trace_moe",
-      description: "shotit Index Data Collection",
+      collection_name: "shotit",
+      description: "Shotit Index Data Collection",
       fields: [
         {
           name: "cl_ha",
@@ -119,12 +119,12 @@ beforeAll(async () => {
       ],
     };
 
-    await milvusClient.collectionManager.releaseCollection({ collection_name: "trace_moe" });
+    await milvusClient.collectionManager.releaseCollection({ collection_name: "shotit" });
 
     await milvusClient.collectionManager.createCollection(params);
 
     await milvusClient.dataManager.insert({
-      collection_name: "trace_moe",
+      collection_name: "shotit",
       fields_data: [
         {
           id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
@@ -191,7 +191,7 @@ beforeAll(async () => {
       ],
     });
 
-    await milvusClient.dataManager.flushSync({ collection_names: ["trace_moe"] });
+    await milvusClient.dataManager.flushSync({ collection_names: ["shotit"] });
 
     const index_params = {
       metric_type: "IP",
@@ -200,13 +200,13 @@ beforeAll(async () => {
     };
 
     await milvusClient.indexManager.createIndex({
-      collection_name: "trace_moe",
+      collection_name: "shotit",
       field_name: "cl_ha",
       extra_params: index_params,
     });
 
     // await milvusClient.collectionManager.loadCollectionSync({
-    //   collection_name: "trace_moe",
+    //   collection_name: "shotit",
     // });
 
     console.log("initializeAndInsertMilvusCollection ends");
