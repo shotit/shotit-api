@@ -9,14 +9,16 @@ services:
     ports:
       - ${SOLA_DB_PORT}:3306
     networks:
-      trace_moe_net:
+      shotit_net:
+
 
   redis:
     image: redis:latest
     ports:
       - ${REDIS_PORT}:6379
     networks:
-      trace_moe_net:
+      shotit_net:
+
 
   liresolr:
     image: ghcr.io/soruly/liresolr:latest
@@ -29,8 +31,9 @@ services:
         source: /var/solr
         target: /var/solr
     networks:
-      trace_moe_net:
+      shotit_net:
+
 
 networks:
-  trace_moe_net:
+  shotit_net:
     driver: bridge
