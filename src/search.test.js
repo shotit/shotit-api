@@ -119,11 +119,11 @@ beforeAll(async () => {
       ],
     };
 
-    await milvusClient.collectionManager.releaseCollection({ collection_name: "shotit" });
+    await milvusClient.releaseCollection({ collection_name: "shotit" });
 
-    await milvusClient.collectionManager.createCollection(params);
+    await milvusClient.createCollection(params);
 
-    await milvusClient.dataManager.insert({
+    await milvusClient.insert({
       collection_name: "shotit",
       fields_data: [
         {
@@ -191,7 +191,7 @@ beforeAll(async () => {
       ],
     });
 
-    await milvusClient.dataManager.flushSync({ collection_names: ["shotit"] });
+    await milvusClient.flushSync({ collection_names: ["shotit"] });
 
     const index_params = {
       metric_type: "IP",
@@ -199,13 +199,13 @@ beforeAll(async () => {
       params: JSON.stringify({ nlist: 128 }),
     };
 
-    await milvusClient.indexManager.createIndex({
+    await milvusClient.createIndex({
       collection_name: "shotit",
       field_name: "cl_ha",
       extra_params: index_params,
     });
 
-    // await milvusClient.collectionManager.loadCollectionSync({
+    // await milvusClient.loadCollectionSync({
     //   collection_name: "shotit",
     // });
 
@@ -225,7 +225,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await app.locals.knex(TRACE_ALGO).truncate();
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.redis.disconnect();
   await app.locals.knex.destroy();
 });
@@ -516,7 +516,7 @@ describe("invalid input", () => {
   });
   test("/search by image URL with invalid image", async () => {
     // Failed to process image
-    const response = await request(app).get("/search").query({ url: "https://media.shotit" });
+    const response = await request(app).get("/search").query({ url: "https://media.trace.moe" });
     expect(response.statusCode).toBe(400);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");
