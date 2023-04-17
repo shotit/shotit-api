@@ -35,7 +35,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Run liresolr
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           sudo mkdir /tmp/solr
           sudo chown 8983:8983 /tmp/solr
@@ -48,7 +48,7 @@ jobs:
           sudo apt-get install -y ffmpeg --fix-missing
       - name: Docker run etcd
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           sudo mkdir /tmp/etcd
           docker run -d --name etcd -v /tmp/etcd:/etcd \
@@ -62,7 +62,7 @@ jobs:
           --data-dir /etcd
       - name: Docker run minio
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           sudo mkdir /tmp/minio
           docker run -d --name minio -v /tmp/minio:/minio_data \
@@ -73,7 +73,7 @@ jobs:
           minio server /minio_data
       - name: Docker run milvus-standalone
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           sudo mkdir /tmp/milvus
           docker run -d --name standalone -v /tmp/milvus:/var/lib/milvus \
@@ -81,11 +81,11 @@ jobs:
           -p 19530:19530 -p 9091:9091 \
           -e ETCD_ENDPOINTS=etcd:2379 \
           -e MINIO_ADDRESS=minio:9000 \
-          milvusdb/milvus:v2.1.2 \
+          milvusdb/milvus:v2.2.5 \
           milvus run standalone
       - name: Docker run searcher
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
           docker run -d --name searcher \
           --network $CONTAINER_NETWORK \
@@ -94,21 +94,21 @@ jobs:
           -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
           -e SEARCHER_URL=http://172.17.0.1:19531 \
           -e MILVUS_URL=172.17.0.1:19530 \
-          ghcr.io/leslie-wong-h/shotit-worker-searcher:latest
-      - name: Docker run rearranger
+          ghcr.io/shotit/shotit-worker-searcher:latest
+      - name: Docker run sorter
         env:
-            CONTAINER_NETWORK: ${{ job.container.network }}
+          CONTAINER_NETWORK: ${{ job.container.network }}
         run: |
-          docker run -d --name rearranger \
+          docker run -d --name sorter \
           --network $CONTAINER_NETWORK \
           -p 19532:19532 \
-          ghcr.io/leslie-wong-h/shotit-rearranger:latest
+          ghcr.io/shotit/shotit-sorter:latest
       # Sleep for 30 seconds to wait for Milvus Proxy and Searcher ready
       - name: Sleep for 30 seconds
         run: sleep 30s
-        shell: bash          
-      - run: npm ci
-      - run: npm run jest
+        shell: bash
+      - run: yarn install --frozen-lockfile
+      - run: yarn jest
         env:
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
