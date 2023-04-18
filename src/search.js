@@ -454,7 +454,7 @@ export default async (req, res) => {
   }
 
   if ("imdbInfo" in req.query) {
-    const response = await fetch("https://graphql.imdb.co/", {
+    const response = await fetch("https://graphql.anilist.co/", {
       method: "POST",
       body: JSON.stringify({
         query: `query ($ids: [Int]) {

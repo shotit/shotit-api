@@ -33,7 +33,7 @@ for (const idList of batch) {
   let res;
   do {
     // console.log(`Fetching page (${batch.findIndex((e) => e === idList) + 1}/${batch.length})`);
-    res = await fetch("https://graphql.imdb.co/", {
+    res = await fetch("https://graphql.anilist.co/", {
       method: "POST",
       body: JSON.stringify({
         query: `query ($ids: [Int]) {
