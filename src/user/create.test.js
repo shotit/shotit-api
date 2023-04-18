@@ -17,33 +17,33 @@ beforeAll(async () => {
       multipleStatements: true,
     },
   });
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 101,
-    email: "test@shotit",
+    email: "test@trace.moe",
     password: "password",
     api_key: "OwTPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
     tier: 9,
     notes: "Test Account",
   });
   app.locals.apiKey = "OwTPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g";
-  await app.locals.knex("user").where("email", "user@shotit").del();
+  await app.locals.knex("user").where("email", "user@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 1000,
-    email: "user@shotit",
+    email: "user@trace.moe",
     password: "password",
     api_key: "2zd3HL8cfKqdc4BVsTwuw4QhNa7diKYjweE3zlP",
     tier: 9,
     notes: "Test Account",
   });
   app.locals.userApiKey = "2zd3HL8cfKqdc4BVsTwuw4QhNa7diKYjweE3zlP";
-  await app.locals.knex("user").where("email", "admin@shotit").del();
+  await app.locals.knex("user").where("email", "admin@trace.moe").del();
 });
 
 afterAll(async () => {
-  await app.locals.knex("user").where("email", "admin@shotit").del();
-  await app.locals.knex("user").where("email", "user@shotit").del();
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "admin@trace.moe").del();
+  await app.locals.knex("user").where("email", "user@trace.moe").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex.destroy();
 });
 
@@ -74,9 +74,9 @@ describe("Create user with valid system API key", () => {
   describe.each([
     ["No email address", { email: "" }],
     ["Invalid email address", { email: "email" }],
-    ["Missing tier", { email: "admin@shotit" }],
-    ["Invalid tier", { email: "admin@shotit", tier: -1 }],
-    ["Already existed email", { email: "test@shotit", tier: 1 }],
+    ["Missing tier", { email: "admin@trace.moe" }],
+    ["Invalid tier", { email: "admin@trace.moe", tier: -1 }],
+    ["Already existed email", { email: "test@trace.moe", tier: 1 }],
   ])("%s", (_, data) => {
     test("POST /create", async () => {
       const response = await request(app)
@@ -93,7 +93,7 @@ describe("Create user with valid system API key", () => {
     const response = await request(app)
       .post("/user/create")
       .query({ key: app.locals.apiKey })
-      .send({ email: "admin@shotit", tier: 1 });
+      .send({ email: "admin@trace.moe", tier: 1 });
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body).toBe("object");

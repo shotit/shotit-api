@@ -38,10 +38,10 @@ beforeAll(async () => {
       multipleStatements: true,
     },
   });
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 100,
-    email: "user@shotit",
+    email: "user@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt3g",
     tier: 1,
@@ -50,7 +50,7 @@ beforeAll(async () => {
   app.locals.apiKeyTier0 = "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt3g";
   await app.locals.knex("user").insert({
     id: 1000,
-    email: "user@shotit",
+    email: "user@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
     tier: 1,
@@ -59,7 +59,7 @@ beforeAll(async () => {
   app.locals.apiKeyTier1 = "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g";
   await app.locals.knex("user").insert({
     id: 1001,
-    email: "test@shotit",
+    email: "test@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt5g",
     tier: 9,

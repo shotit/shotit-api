@@ -17,10 +17,10 @@ beforeAll(async () => {
       multipleStatements: true,
     },
   });
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 101,
-    email: "test@shotit",
+    email: "test@trace.moe",
     password:
       "Aen/RAPgJH+qWQRVHxa+umFSO/wCS7d4eTlSY+pF6eFa3n83131XSK5zuiu5T9LPzumL/60Wu3syEc1lu6HPLA==",
     api_key: "OwTPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
@@ -31,7 +31,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex.destroy();
 });
 
@@ -43,13 +43,13 @@ describe("/user/login without email or password", () => {
     expect(typeof response.body.error).toBe("string");
   });
   test("no password", async () => {
-    const response = await request(app).post("/user/login").send({ email: "test@shotit" });
+    const response = await request(app).post("/user/login").send({ email: "test@trace.moe" });
     expect(response.statusCode).toBe(403);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");
   });
   test("no email", async () => {
-    const response = await request(app).post("/user/login").send({ password: "test@shotit" });
+    const response = await request(app).post("/user/login").send({ password: "test@trace.moe" });
     expect(response.statusCode).toBe(403);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");
@@ -60,7 +60,7 @@ describe("/user/login with invalid email or password", () => {
   test("Invalid email", async () => {
     const response = await request(app)
       .post("/user/login")
-      .send({ email: "nobody@shotit", password: "A" });
+      .send({ email: "nobody@trace.moe", password: "A" });
     expect(response.statusCode).toBe(403);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");
@@ -68,7 +68,7 @@ describe("/user/login with invalid email or password", () => {
   test("Valid email wrong password", async () => {
     const response = await request(app)
       .post("/user/login")
-      .send({ email: "test@shotit", password: "A" });
+      .send({ email: "test@trace.moe", password: "A" });
     expect(response.statusCode).toBe(403);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");
@@ -79,7 +79,7 @@ describe("/user/login with valid email and password", () => {
   test("should return apiKey", async () => {
     const response = await request(app)
       .post("/user/login")
-      .send({ email: "test@shotit", password: "nFMP0Fal8aPdu7nWmwfwwQ" });
+      .send({ email: "test@trace.moe", password: "nFMP0Fal8aPdu7nWmwfwwQ" });
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.key).toBe("string");
