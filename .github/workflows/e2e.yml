@@ -81,7 +81,7 @@ jobs:
           -p 19530:19530 -p 9091:9091 \
           -e ETCD_ENDPOINTS=etcd:2379 \
           -e MINIO_ADDRESS=minio:9000 \
-          milvusdb/milvus:v2.2.2 \
+          milvusdb/milvus:v2.2.4 \
           milvus run standalone
       - name: Docker run searcher
         env:
