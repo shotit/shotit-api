@@ -222,11 +222,11 @@ beforeAll(async () => {
     updated: new Date(),
   });
 
-  // Puase 10 seconds to wait for Milvus ready
+  // Puase for 1 second to wait for Milvus ready
   await new Promise((resolve) => {
     setTimeout(() => {
       resolve();
-    }, 1000 * 10);
+    }, 1000);
   });
 });
 
