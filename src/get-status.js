@@ -38,7 +38,7 @@ export default async (req, res) => {
     /* Use Milvus statistics */
     const milvusClient = new MilvusClient(MILVUS_URL);
 
-    const collectionStatistics = await milvusClient.getCollectionStatistics({
+    const collectionStatistics = await milvusClient.collectionManager.getCollectionStatistics({
       collection_name: "shotit",
     });
     const rowCount = collectionStatistics?.data.row_count;
@@ -57,7 +57,7 @@ export default async (req, res) => {
     */
     const totalSize = 286.3 * (Number(rowCount) / 1_000_000) * 1024 * 1024;
 
-    const collectionStatus = await milvusClient.showCollections({
+    const collectionStatus = await milvusClient.collectionManager.showCollections({
       type: 1,
       collection_names: ["shotit"],
     });

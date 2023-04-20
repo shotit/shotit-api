@@ -51,7 +51,7 @@ test("GET /status", async () => {
   const totalSize = response.body?.totalSize;
   const lastModified = new Date(response.body?.lastModified);
   expect(errorCode).toBe("Success");
-  // Refer to search.test.js "milvusClient.insert"
+  // Refer to search.test.js "milvusClient.dataManager.insert"
   // The number should be 2, string type.
   expect(rowCount).toBe("2");
   expect(totalSize).toBeGreaterThanOrEqual(0);
