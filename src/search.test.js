@@ -221,6 +221,13 @@ beforeAll(async () => {
     created: new Date(),
     updated: new Date(),
   });
+
+  // Puase 10 seconds to wait for Milvus ready
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000 * 10);
+  });
 });
 
 afterAll(async () => {
