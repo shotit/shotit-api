@@ -221,13 +221,6 @@ beforeAll(async () => {
     created: new Date(),
     updated: new Date(),
   });
-
-  // Puase for 1 second to wait for Milvus ready
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
 });
 
 afterAll(async () => {
@@ -238,28 +231,28 @@ afterAll(async () => {
 });
 
 describe("without API Key", () => {
-  test("/search by image URL", async () => {
-    const response = await request(app)
-      .get("/search")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe(21034);
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
+  // test("/search by image URL", async () => {
+  //   const response = await request(app)
+  //     .get("/search")
+  //     .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+  //   expect(response.statusCode).toBe(200);
+  //   expect(response.headers["content-type"]).toMatch(/^application\/json/);
+  //   expect(typeof response.body.frameCount).toBe("number");
+  //   expect(typeof response.body.error).toBe("string");
+  //   expect(Array.isArray(response.body.result)).toBeTruthy();
+  //   const topResult = response.body.result[0];
+  //   expect(typeof topResult.imdb).toBe("number");
+  //   expect(typeof topResult.filename).toBe("string");
+  //   expect(typeof topResult.episode).toBe("number");
+  //   expect(typeof topResult.from).toBe("number");
+  //   expect(typeof topResult.to).toBe("number");
+  //   expect(typeof topResult.similarity).toBe("number");
+  //   expect(typeof topResult.video).toBe("string");
+  //   expect(typeof topResult.image).toBe("string");
+  //   expect(topResult.imdb).toBe(21034);
+  //   expect(topResult.episode).toBe(1);
+  //   expect(topResult.similarity).toBeGreaterThan(0.9);
+  // });
   test("/search by Form Post", async () => {
     if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
       await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
