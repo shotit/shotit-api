@@ -11,7 +11,7 @@ import { performance } from "perf_hooks";
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
 // const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
-const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, SEARCHER_URL, REARRANGER_URL } = process.env;
+const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, SEARCHER_URL, SORTER_URL } = process.env;
 
 /* Solr Search */
 // const search = (image, candidates, imdbID) =>
@@ -415,9 +415,9 @@ export default async (req, res) => {
   });
 
   /**
-   *  Rearrange the result according to shotit-rearranger
+   *  Sort the result according to shotit-sorter
    */
-  if ("rearrange" in req.query) {
+  if ("sort" in req.query) {
     // The image link may not be a valid link to process, so make it conditional
     const originalResult = result;
     try {
@@ -432,12 +432,12 @@ export default async (req, res) => {
       await fs.outputFile(tempSearchImagePath, searchImage);
       formdata.append("target", fs.createReadStream(tempSearchImagePath));
 
-      const resultResponse = await fetch(`${REARRANGER_URL}/rearrange`, {
+      const resultResponse = await fetch(`${SORTER_URL}/sort`, {
         method: "POST",
         body: formdata,
       }).catch((e) => {
         console.error(e);
-        throw new Error("failed to fetch REARRANGER_URL");
+        throw new Error("failed to fetch SORTER_URL");
       });
       const resultResponseJson = await resultResponse.json();
       if ("result" in resultResponseJson) {

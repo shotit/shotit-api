@@ -123,7 +123,7 @@ jobs:
           TRACE_MEDIA_URL: http://127.0.0.1
           TRACE_MEDIA_SALT: TRACE_MEDIA_SALT
           SEARCHER_URL: http://172.17.0.1:19531
-          REARRANGER_URL: http://172.17.0.1:19532
+          SORTER_URL: http://172.17.0.1:19532
           MILVUS_URL: 172.17.0.1:19530
           TRACE_ACCURACY: 0.02
           TRACE_API_SALT: YOUR_TRACE_API_SALT

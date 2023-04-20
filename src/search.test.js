@@ -335,9 +335,9 @@ describe("without API Key", () => {
     expect(topResult.episode).toBe(1);
     expect(topResult.similarity).toBeGreaterThan(0.9);
   });
-  test("/search by image URL with rearrange", async () => {
+  test("/search by image URL with sort", async () => {
     const response = await request(app)
-      .get("/search?rearrange")
+      .get("/search?sort")
       .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
