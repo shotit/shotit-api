@@ -38,10 +38,10 @@ beforeAll(async () => {
       multipleStatements: true,
     },
   });
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 100,
-    email: "user@shotit",
+    email: "user@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt3g",
     tier: 1,
@@ -50,7 +50,7 @@ beforeAll(async () => {
   app.locals.apiKeyTier0 = "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt3g";
   await app.locals.knex("user").insert({
     id: 1000,
-    email: "user@shotit",
+    email: "user@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
     tier: 1,
@@ -59,7 +59,7 @@ beforeAll(async () => {
   app.locals.apiKeyTier1 = "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g";
   await app.locals.knex("user").insert({
     id: 1001,
-    email: "test@shotit",
+    email: "test@trace.moe",
     password: "password",
     api_key: "OwOPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt5g",
     tier: 9,
@@ -83,8 +83,8 @@ beforeAll(async () => {
     const milvusClient = new MilvusClient(MILVUS_URL);
 
     const params = {
-      collection_name: "trace_moe",
-      description: "shotit Index Data Collection",
+      collection_name: "shotit",
+      description: "Shotit Index Data Collection",
       fields: [
         {
           name: "cl_ha",
@@ -119,12 +119,12 @@ beforeAll(async () => {
       ],
     };
 
-    await milvusClient.collectionManager.releaseCollection({ collection_name: "trace_moe" });
+    await milvusClient.collectionManager.releaseCollection({ collection_name: "shotit" });
 
     await milvusClient.collectionManager.createCollection(params);
 
     await milvusClient.dataManager.insert({
-      collection_name: "trace_moe",
+      collection_name: "shotit",
       fields_data: [
         {
           id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
@@ -191,7 +191,7 @@ beforeAll(async () => {
       ],
     });
 
-    await milvusClient.dataManager.flushSync({ collection_names: ["trace_moe"] });
+    await milvusClient.dataManager.flushSync({ collection_names: ["shotit"] });
 
     const index_params = {
       metric_type: "IP",
@@ -200,13 +200,13 @@ beforeAll(async () => {
     };
 
     await milvusClient.indexManager.createIndex({
-      collection_name: "trace_moe",
+      collection_name: "shotit",
       field_name: "cl_ha",
       extra_params: index_params,
     });
 
     // await milvusClient.collectionManager.loadCollectionSync({
-    //   collection_name: "trace_moe",
+    //   collection_name: "shotit",
     // });
 
     console.log("initializeAndInsertMilvusCollection ends");
@@ -225,7 +225,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await app.locals.knex(TRACE_ALGO).truncate();
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.redis.disconnect();
   await app.locals.knex.destroy();
 });
@@ -335,9 +335,9 @@ describe("without API Key", () => {
     expect(topResult.episode).toBe(1);
     expect(topResult.similarity).toBeGreaterThan(0.9);
   });
-  test("/search by image URL with rearrange", async () => {
+  test("/search by image URL with sort", async () => {
     const response = await request(app)
-      .get("/search?rearrange")
+      .get("/search?sort")
       .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
@@ -516,7 +516,7 @@ describe("invalid input", () => {
   });
   test("/search by image URL with invalid image", async () => {
     // Failed to process image
-    const response = await request(app).get("/search").query({ url: "https://media.shotit" });
+    const response = await request(app).get("/search").query({ url: "https://media.trace.moe" });
     expect(response.statusCode).toBe(400);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body.error).toBe("string");

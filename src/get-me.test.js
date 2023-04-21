@@ -17,10 +17,10 @@ beforeAll(async () => {
       multipleStatements: true,
     },
   });
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex("user").insert({
     id: 101,
-    email: "test@shotit",
+    email: "test@trace.moe",
     password: "password",
     api_key: "OwTPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
     tier: 9,
@@ -30,7 +30,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await app.locals.knex("user").where("email", "test@shotit").del();
+  await app.locals.knex("user").where("email", "test@trace.moe").del();
   await app.locals.knex.destroy();
 });
 
