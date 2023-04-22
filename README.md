@@ -1,4 +1,4 @@
-# shotit-api
+# Shotit-api
 
 [![License](https://img.shields.io/github/license/shotit/shotit-api.svg?style=flat-square)](https://github.com/shotit/shotit-api/blob/master/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/shotit/shotit-api/docker-image.yml?style=flat-square)](https://github.com/shotit/shotit-api/actions)
