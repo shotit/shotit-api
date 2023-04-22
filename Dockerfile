@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y ffmpeg
 ENV NODE_ENV=production
 WORKDIR /app
 COPY ["package.json", "yarn.lock*", "./"]
-RUN yarn install --production
+RUN yarn install --frozen-lockfile --production
 COPY . .
 CMD [ "node", "server.js" ]

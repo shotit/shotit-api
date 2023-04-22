@@ -2,6 +2,7 @@ version: "3.2"
 
 services:
   mariadb:
+    container_name: shotit-mariadb
     image: mariadb:latest
     restart: unless-stopped
     environment:
@@ -13,6 +14,7 @@ services:
 
 
   redis:
+    container_name: shotit-redis
     image: redis:latest
     ports:
       - ${REDIS_PORT}:6379
@@ -21,15 +23,112 @@ services:
 
 
   liresolr:
-    image: ghcr.io/soruly/liresolr:latest
+    container_name: shotit-liresolr
+    image: ghcr.io/leslie-wong-h/liresolr:latest
     command: solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
     restart: unless-stopped
     ports:
-      - 18983:8983
+      - 8983:8983
     volumes:
-      - type: bind
-        source: /var/solr
-        target: /var/solr
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mycores:/var/solr
+    networks:
+      shotit_net:
+
+
+  searcher:
+    container_name: shotit-searcher
+    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.1
+    restart: unless-stopped
+    ports:
+      - 19531:19531
+    environment:
+      - TRACE_ALGO=cl
+      - SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/
+      - SEARCHER_URL=http://172.17.0.1:19531
+      - MILVUS_URL=172.17.0.1:19530
+    networks:
+      shotit_net:
+
+
+  sorter:
+    container_name: shotit-sorter
+    image: ghcr.io/shotit/shotit-sorter:v0.9.1
+    restart: unless-stopped
+    ports:
+      - 19532:19532
+    networks:
+      shotit_net:
+
+
+  etcd:
+    container_name: milvus-etcd
+    image: quay.io/coreos/etcd:v3.5.0
+    restart: unless-stopped
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    ports:
+      - "2379:2379"
+    networks:
+      shotit_net:
+
+
+  minio:
+    container_name: milvus-minio
+    image: minio/minio:RELEASE.2022-03-17T06-34-49Z
+    restart: unless-stopped
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ETCD_ENDPOINTS=http://172.17.0.1:2379
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
+    # Local Minio Server
+    command: minio server /minio_data --console-address ":9001"
+    # Remote Minio Gateway
+    # command: minio gateway s3 ${AWS_ENDPOINT_URL} --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    depends_on:
+      - "etcd"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      shotit_net:
+
+
+  standalone:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.2.2
+    restart: unless-stopped
+    command: [ "milvus", "run", "standalone" ]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/milvus.yaml:/milvus/configs/milvus.yaml
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    depends_on:
+      - "etcd"
+      - "minio"
     networks:
       shotit_net:
 
