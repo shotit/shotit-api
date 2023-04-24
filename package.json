@@ -30,7 +30,7 @@
   "homepage": "https://github.com/soruly/shotit-api#readme",
   "devDependencies": {
     "jest": "^29.4.1",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.8",
     "supertest": "^6.3.3"
   },
   "dependencies": {
