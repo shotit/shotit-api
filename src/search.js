@@ -348,7 +348,7 @@ export default async (req, res) => {
     // .reduce((list, { d, id }) => {
     .reduce((list, { score: d, id }) => {
       // merge nearby results within 5 seconds in the same filename
-      const imdb_id = Number(id.split("/")[0]);
+      const imdb_id = String(id.split("/")[0]);
       const filename = id.split("/")[1];
       const t = Number(id.split("/")[2]);
       const index = list.findIndex(
