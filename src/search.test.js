@@ -231,327 +231,395 @@ afterAll(async () => {
 });
 
 describe("without API Key", () => {
-  test("/search by image URL", async () => {
-    const response = await request(app)
-      .get("/search")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
-  test("/search by Form Post", async () => {
-    if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-      await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
-        .then((e) => e.arrayBuffer())
-        .then((arrayBuffer) =>
-          fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
-        );
-    }
-    const response = await request(app)
-      .post("/search")
-      .attach("image", "32B15UXxymfSMwKGTObY5e.jpg");
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-    await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
-  });
-  test("/search by file upload", async () => {
-    const response = await request(app)
-      .post("/search")
-      .set("Content-Type", "image/jpeg")
-      .send(
-        Buffer.from(
-          await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg").then((e) =>
-            e.arrayBuffer()
+  test(
+    "/search by image URL",
+    async () => {
+      const response = await request(app)
+        .get("/search")
+        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
+  test(
+    "/search by Form Post",
+    async () => {
+      if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
+        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+          .then((e) => e.arrayBuffer())
+          .then((arrayBuffer) =>
+            fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
+          );
+      }
+      const response = await request(app)
+        .post("/search")
+        .attach("image", "32B15UXxymfSMwKGTObY5e.jpg");
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+      await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by file upload",
+    async () => {
+      const response = await request(app)
+        .post("/search")
+        .set("Content-Type", "image/jpeg")
+        .send(
+          Buffer.from(
+            await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg").then((e) =>
+              e.arrayBuffer()
+            )
           )
+        );
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+      await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with cutBorders",
+    async () => {
+      const response = await request(app)
+        .get("/search?cutBorders")
+        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with sort",
+    async () => {
+      const response = await request(app)
+        .get("/search?sort")
+        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with imdbInfo",
+    async () => {
+      const response = await request(app)
+        .get("/search?imdbInfo")
+        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("object");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb.id).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with imdb filter",
+    async () => {
+      const response = await request(app)
+        .get("/search")
+        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg", imdbID: 21034 });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      expect(response.body.result.every((e) => e.imdb === 21034)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
+
+  test(
+    "/search by image concurrency limit",
+    async () => {
+      if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
+        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+          .then((e) => e.arrayBuffer())
+          .then((arrayBuffer) =>
+            fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
+          );
+      }
+      const res = await Promise.all(
+        [...new Array(5)].map((_) =>
+          request(app).post("/search").attach("image", "32B15UXxymfSMwKGTObY5e.jpg")
         )
       );
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-    await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
-  });
-  test("/search by image URL with cutBorders", async () => {
-    const response = await request(app)
-      .get("/search?cutBorders")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
-  test("/search by image URL with sort", async () => {
-    const response = await request(app)
-      .get("/search?sort")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
-  test("/search by image URL with imdbInfo", async () => {
-    const response = await request(app)
-      .get("/search?imdbInfo")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("object");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb.id).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
-  test("/search by image URL with imdb filter", async () => {
-    const response = await request(app)
-      .get("/search")
-      .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg", imdbID: 21034 });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    expect(response.body.result.every((e) => e.imdb === 21034)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
-
-  test("/search by image concurrency limit", async () => {
-    if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-      await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
-        .then((e) => e.arrayBuffer())
-        .then((arrayBuffer) =>
-          fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
-        );
-    }
-    const res = await Promise.all(
-      [...new Array(5)].map((_) =>
-        request(app).post("/search").attach("image", "32B15UXxymfSMwKGTObY5e.jpg")
-      )
-    );
-    expect(res.map((e) => e.statusCode).includes(402)).toBe(true);
-  });
+      expect(res.map((e) => e.statusCode).includes(402)).toBe(true);
+    },
+    1000 * 10
+  );
 });
 
 describe("with API Key", () => {
-  test("/search by image URL with API Key", async () => {
-    const response = await request(app).get("/search").query({
-      url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
-      key: app.locals.apiKeyTier1,
-    });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
+  test(
+    "/search by image URL with API Key",
+    async () => {
+      const response = await request(app).get("/search").query({
+        url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
+        key: app.locals.apiKeyTier1,
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
 });
 
 describe("with system Tier 9 API Key", () => {
-  test("/search by image queue limit", async () => {
-    if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-      await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
-        .then((e) => e.arrayBuffer())
-        .then((arrayBuffer) =>
-          fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
-        );
-    }
-    const res = await Promise.all(
-      [...new Array(8)].map((_) =>
-        request(app)
-          .post("/search")
-          .query({ key: app.locals.apiKeyTier9 })
-          .attach("image", "32B15UXxymfSMwKGTObY5e.jpg")
-      )
-    );
-    expect(res.map((e) => e.statusCode).includes(503)).toBe(true);
-  });
+  test(
+    "/search by image queue limit",
+    async () => {
+      if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
+        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+          .then((e) => e.arrayBuffer())
+          .then((arrayBuffer) =>
+            fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
+          );
+      }
+      const res = await Promise.all(
+        [...new Array(8)].map((_) =>
+          request(app)
+            .post("/search")
+            .query({ key: app.locals.apiKeyTier9 })
+            .attach("image", "32B15UXxymfSMwKGTObY5e.jpg")
+        )
+      );
+      expect(res.map((e) => e.statusCode).includes(503)).toBe(true);
+    },
+    1000 * 10
+  );
 });
 
 describe("with system system API Key", () => {
-  test("/search by image URL with API Key", async () => {
-    const response = await request(app).get("/search").query({
-      url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
-      key: app.locals.apiKeyTier0,
-    });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
+  test(
+    "/search by image URL with API Key",
+    async () => {
+      const response = await request(app).get("/search").query({
+        url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
+        key: app.locals.apiKeyTier0,
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
 });
 
 describe("invalid input", () => {
-  test("/search with wrong HTTP Method", async () => {
-    // Method Not Allowed
-    const response = await request(app).get("/search");
-    expect(response.statusCode).toBe(405);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.error).toBe("string");
-  });
-  test("/search by image URL with invalid URL", async () => {
-    // Invalid image url
-    const response = await request(app).get("/search").query({ url: "explosion" });
-    expect(response.statusCode).toBe(400);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.error).toBe("string");
-  });
-  test("/search by image URL with inaccessible image URL", async () => {
-    // Failed to fetch image
-    const response = await request(app).get("/search").query({ url: "https://0.0.0.0/a" });
-    expect(response.statusCode).toBeGreaterThanOrEqual(400);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.error).toBe("string");
-  });
-  test("/search by image URL with invalid image", async () => {
-    // Failed to process image
-    const response = await request(app).get("/search").query({ url: "https://media.trace.moe" });
-    expect(response.statusCode).toBe(400);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.error).toBe("string");
-  });
-  test("/search by image URL with invalid API Key", async () => {
-    // Invalid API key
-    const response = await request(app).get("/search").query({ key: "explosion" });
-    expect(response.statusCode).toBe(403);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.error).toBe("string");
-  });
+  test(
+    "/search with wrong HTTP Method",
+    async () => {
+      // Method Not Allowed
+      const response = await request(app).get("/search");
+      expect(response.statusCode).toBe(405);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.error).toBe("string");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with invalid URL",
+    async () => {
+      // Invalid image url
+      const response = await request(app).get("/search").query({ url: "explosion" });
+      expect(response.statusCode).toBe(400);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.error).toBe("string");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with inaccessible image URL",
+    async () => {
+      // Failed to fetch image
+      const response = await request(app).get("/search").query({ url: "https://0.0.0.0/a" });
+      expect(response.statusCode).toBeGreaterThanOrEqual(400);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.error).toBe("string");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with invalid image",
+    async () => {
+      // Failed to process image
+      const response = await request(app).get("/search").query({ url: "https://media.trace.moe" });
+      expect(response.statusCode).toBe(400);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.error).toBe("string");
+    },
+    1000 * 10
+  );
+  test(
+    "/search by image URL with invalid API Key",
+    async () => {
+      // Invalid API key
+      const response = await request(app).get("/search").query({ key: "explosion" });
+      expect(response.statusCode).toBe(403);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.error).toBe("string");
+    },
+    1000 * 10
+  );
 });
 
 describe.each([
   ["16:9 in 16:9,  no border", "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg"],
   ["16:9 in 16:10, #000 border", "https://images.plurk.com/I7r7frYsuiYcyWTmC8DAL.jpg"],
 ])("%s", (_, url, expected) => {
-  test("/search by image URL with cutBorders", async () => {
-    const response = await request(app).get("/search?cutBorders").query({ url });
-    expect(response.statusCode).toBe(200);
-    expect(response.headers["content-type"]).toMatch(/^application\/json/);
-    expect(typeof response.body.frameCount).toBe("number");
-    expect(typeof response.body.error).toBe("string");
-    expect(Array.isArray(response.body.result)).toBeTruthy();
-    const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("string");
-    expect(typeof topResult.filename).toBe("string");
-    expect(typeof topResult.episode).toBe("number");
-    expect(typeof topResult.from).toBe("number");
-    expect(typeof topResult.to).toBe("number");
-    expect(typeof topResult.similarity).toBe("number");
-    expect(typeof topResult.video).toBe("string");
-    expect(typeof topResult.image).toBe("string");
-    expect(topResult.imdb).toBe("21034");
-    expect(topResult.episode).toBe(1);
-    expect(topResult.similarity).toBeGreaterThan(0.9);
-  });
+  test(
+    "/search by image URL with cutBorders",
+    async () => {
+      const response = await request(app).get("/search?cutBorders").query({ url });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(typeof response.body.frameCount).toBe("number");
+      expect(typeof response.body.error).toBe("string");
+      expect(Array.isArray(response.body.result)).toBeTruthy();
+      const topResult = response.body.result[0];
+      expect(typeof topResult.imdb).toBe("string");
+      expect(typeof topResult.filename).toBe("string");
+      expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.from).toBe("number");
+      expect(typeof topResult.to).toBe("number");
+      expect(typeof topResult.similarity).toBe("number");
+      expect(typeof topResult.video).toBe("string");
+      expect(typeof topResult.image).toBe("string");
+      expect(topResult.imdb).toBe("21034");
+      expect(topResult.episode).toBe(1);
+      expect(topResult.similarity).toBeGreaterThan(0.9);
+    },
+    1000 * 10
+  );
 });
