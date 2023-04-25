@@ -241,7 +241,7 @@ describe("without API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -270,7 +270,7 @@ describe("without API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -300,7 +300,7 @@ describe("without API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -323,7 +323,7 @@ describe("without API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -345,7 +345,7 @@ describe("without API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -390,7 +390,7 @@ describe("without API Key", () => {
     expect(Array.isArray(response.body.result)).toBeTruthy();
     expect(response.body.result.every((e) => e.imdb === 21034)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -431,7 +431,7 @@ describe("with API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -478,7 +478,7 @@ describe("with system system API Key", () => {
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
@@ -542,7 +542,7 @@ describe.each([
     expect(typeof response.body.error).toBe("string");
     expect(Array.isArray(response.body.result)).toBeTruthy();
     const topResult = response.body.result[0];
-    expect(typeof topResult.imdb).toBe("number");
+    expect(typeof topResult.imdb).toBe("string");
     expect(typeof topResult.filename).toBe("string");
     expect(typeof topResult.episode).toBe("number");
     expect(typeof topResult.from).toBe("number");
