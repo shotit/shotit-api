@@ -377,32 +377,32 @@ describe("without API Key", () => {
     },
     1000 * 10
   );
-  test(
-    "/search by image URL with imdbInfo",
-    async () => {
-      const response = await request(app)
-        .get("/search?imdbInfo")
-        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
-      expect(response.statusCode).toBe(200);
-      expect(response.headers["content-type"]).toMatch(/^application\/json/);
-      expect(typeof response.body.frameCount).toBe("number");
-      expect(typeof response.body.error).toBe("string");
-      expect(Array.isArray(response.body.result)).toBeTruthy();
-      const topResult = response.body.result[0];
-      expect(typeof topResult.imdb).toBe("object");
-      expect(typeof topResult.filename).toBe("string");
-      expect(typeof topResult.episode).toBe("number");
-      expect(typeof topResult.from).toBe("number");
-      expect(typeof topResult.to).toBe("number");
-      expect(typeof topResult.similarity).toBe("number");
-      expect(typeof topResult.video).toBe("string");
-      expect(typeof topResult.image).toBe("string");
-      expect(topResult.imdb.id).toBe("21034");
-      expect(topResult.episode).toBe(1);
-      expect(topResult.similarity).toBeGreaterThan(0.9);
-    },
-    1000 * 10
-  );
+  // test(
+  //   "/search by image URL with imdbInfo",
+  //   async () => {
+  //     const response = await request(app)
+  //       .get("/search?imdbInfo")
+  //       .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+  //     expect(response.statusCode).toBe(200);
+  //     expect(response.headers["content-type"]).toMatch(/^application\/json/);
+  //     expect(typeof response.body.frameCount).toBe("number");
+  //     expect(typeof response.body.error).toBe("string");
+  //     expect(Array.isArray(response.body.result)).toBeTruthy();
+  //     const topResult = response.body.result[0];
+  //     expect(typeof topResult.imdb).toBe("object");
+  //     expect(typeof topResult.filename).toBe("string");
+  //     expect(typeof topResult.episode).toBe("number");
+  //     expect(typeof topResult.from).toBe("number");
+  //     expect(typeof topResult.to).toBe("number");
+  //     expect(typeof topResult.similarity).toBe("number");
+  //     expect(typeof topResult.video).toBe("string");
+  //     expect(typeof topResult.image).toBe("string");
+  //     expect(topResult.imdb.id).toBe("21034");
+  //     expect(topResult.episode).toBe(1);
+  //     expect(topResult.similarity).toBeGreaterThan(0.9);
+  //   },
+  //   1000 * 10
+  // );
   test(
     "/search by image URL with imdb filter",
     async () => {
@@ -414,7 +414,7 @@ describe("without API Key", () => {
       expect(typeof response.body.frameCount).toBe("number");
       expect(typeof response.body.error).toBe("string");
       expect(Array.isArray(response.body.result)).toBeTruthy();
-      expect(response.body.result.every((e) => e.imdb === 21034)).toBeTruthy();
+      expect(response.body.result.every((e) => e.imdb === "21034")).toBeTruthy();
       const topResult = response.body.result[0];
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");

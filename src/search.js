@@ -453,38 +453,38 @@ export default async (req, res) => {
     }
   }
 
-  if ("imdbInfo" in req.query) {
-    const response = await fetch("https://graphql.anilist.co/", {
-      method: "POST",
-      body: JSON.stringify({
-        query: `query ($ids: [Int]) {
-            Page(page: 1, perPage: 50) {
-              media(id_in: $ids, type: ANIME) {
-                id
-                idMal
-                title {
-                  native
-                  romaji
-                  english
-                }
-                synonyms
-                isAdult
-              }
-            }
-          }
-          `,
-        variables: { ids: result.map((e) => e.imdb) },
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-    if (response.status < 400) {
-      const imdbData = (await response.json()).data.Page.media;
-      result = result.map((entry) => {
-        entry.imdb = imdbData.find((e) => e.id === entry.imdb);
-        return entry;
-      });
-    }
-  }
+  // if ("imdbInfo" in req.query) {
+  //   const response = await fetch("https://graphql.anilist.co/", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       query: `query ($ids: [Int]) {
+  //           Page(page: 1, perPage: 50) {
+  //             media(id_in: $ids, type: ANIME) {
+  //               id
+  //               idMal
+  //               title {
+  //                 native
+  //                 romaji
+  //                 english
+  //               }
+  //               synonyms
+  //               isAdult
+  //             }
+  //           }
+  //         }
+  //         `,
+  //       variables: { ids: result.map((e) => e.imdb) },
+  //     }),
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+  //   if (response.status < 400) {
+  //     const imdbData = (await response.json()).data.Page.media;
+  //     result = result.map((entry) => {
+  //       entry.imdb = imdbData.find((e) => e.id === entry.imdb);
+  //       return entry;
+  //     });
+  //   }
+  // }
 
   await logAndDequeue(knex, redis, uid, priority, 200, searchTime, result[0]?.similarity);
   await redis.set(`s:${uid}`, `${searchCount + 1}`);
