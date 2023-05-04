@@ -94,7 +94,7 @@ jobs:
           -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
           -e SEARCHER_URL=http://172.17.0.1:19531 \
           -e MILVUS_URL=172.17.0.1:19530 \
-          ghcr.io/shotit/shotit-worker-searcher:v0.9.1
+          ghcr.io/shotit/shotit-worker-searcher:v0.9.3
       - name: Docker run sorter
         env:
           CONTAINER_NETWORK: ${{ job.container.network }}
@@ -102,7 +102,7 @@ jobs:
           docker run -d --name sorter \
           --network $CONTAINER_NETWORK \
           -p 19532:19532 \
-          ghcr.io/shotit/shotit-sorter:v0.9.1
+          ghcr.io/shotit/shotit-sorter:v0.9.3
       # Sleep for 120 seconds to wait for Milvus Proxy and Searcher ready
       - name: Sleep for 120 seconds
         run: sleep 120s
