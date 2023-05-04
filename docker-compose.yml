@@ -37,7 +37,7 @@ services:
 
   searcher:
     container_name: shotit-searcher
-    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.1
+    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.3
     restart: unless-stopped
     ports:
       - 19531:19531
@@ -52,7 +52,7 @@ services:
 
   sorter:
     container_name: shotit-sorter
-    image: ghcr.io/shotit/shotit-sorter:v0.9.1
+    image: ghcr.io/shotit/shotit-sorter:v0.9.3
     restart: unless-stopped
     ports:
       - 19532:19532
