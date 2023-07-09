@@ -90,24 +90,18 @@ beforeAll(async () => {
           name: "cl_ha",
           description: "Dynamic fields for LIRE Solr",
           data_type: 101, // DataType.FloatVector
-          type_params: {
-            dim: "100",
-          },
+          dim: 100,
         },
         // {
         //   name: "cl_hi",
-        //   data_type: 21, //DataType.VARCHAR
-        //   type_params: {
-        //     max_length: "200",
-        //   },
+        //   data_type: 21, //DataType.VarChar
+        //   max_length: 200,
         //   description: "Metric Spaces Indexing",
         // },
         {
           name: "id",
-          data_type: 21, //DataType.VARCHAR
-          type_params: {
-            max_length: "500",
-          },
+          data_type: 21, //DataType.VarChar
+          max_length: 500,
           description: "${imdbID}/${fileName}/${time}",
         },
         {
@@ -119,11 +113,11 @@ beforeAll(async () => {
       ],
     };
 
-    await milvusClient.collectionManager.releaseCollection({ collection_name: "shotit" });
+    await milvusClient.releaseCollection({ collection_name: "shotit" });
 
-    await milvusClient.collectionManager.createCollection(params);
+    await milvusClient.createCollection(params);
 
-    await milvusClient.dataManager.insert({
+    await milvusClient.insert({
       collection_name: "shotit",
       fields_data: [
         {
@@ -191,7 +185,7 @@ beforeAll(async () => {
       ],
     });
 
-    await milvusClient.dataManager.flushSync({ collection_names: ["shotit"] });
+    await milvusClient.flushSync({ collection_names: ["shotit"] });
 
     const index_params = {
       metric_type: "IP",
@@ -199,13 +193,13 @@ beforeAll(async () => {
       params: JSON.stringify({ nlist: 128 }),
     };
 
-    await milvusClient.indexManager.createIndex({
+    await milvusClient.createIndex({
       collection_name: "shotit",
       field_name: "cl_ha",
       extra_params: index_params,
     });
 
-    // await milvusClient.collectionManager.loadCollectionSync({
+    // await milvusClient.loadCollectionSync({
     //   collection_name: "shotit",
     // });
 
