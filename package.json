@@ -1,6 +1,6 @@
 {
   "name": "shotit-api",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "The ultimate brain of shotit, in charge of task coordination",
   "main": "server.js",
   "type": "module",
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soruly/shotit-api.git"
+    "url": "git+https://github.com/shotit/shotit-api.git"
   },
-  "author": "soruly",
-  "license": "MIT",
+  "author": "PolarBeaver Technology",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/soruly/shotit-api/issues"
+    "url": "https://github.com/shotit/shotit-api/issues"
   },
-  "homepage": "https://github.com/soruly/shotit-api#readme",
+  "homepage": "https://github.com/shotit/shotit-api#readme",
   "devDependencies": {
     "jest": "^29.6.1",
     "prettier": "^2.8.3",
