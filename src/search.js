@@ -345,12 +345,12 @@ export default async (req, res) => {
   }
 
   result = result
-    // .reduce((list, { d, id }) => {
-    .reduce((list, { score: d, id }) => {
+    // .reduce((list, { d, hash_id }) => {
+    .reduce((list, { score: d, hash_id }) => {
       // merge nearby results within 5 seconds in the same filename
-      const imdb_id = String(id.split("/")[0]);
-      const filename = id.split("/")[1];
-      const t = Number(id.split("/")[2]);
+      const imdb_id = String(hash_id.split("/")[0]);
+      const filename = hash_id.split("/")[1];
+      const t = Number(hash_id.split("/")[2]);
       const index = list.findIndex(
         (e) =>
           e.imdb_id === imdb_id &&
