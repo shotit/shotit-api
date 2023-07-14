@@ -187,16 +187,12 @@ beforeAll(async () => {
 
     await milvusClient.flushSync({ collection_names: ["shotit"] });
 
-    const index_params = {
-      metric_type: "IP",
-      index_type: "IVF_SQ8",
-      params: JSON.stringify({ nlist: 128 }),
-    };
-
     await milvusClient.createIndex({
       collection_name: "shotit",
       field_name: "cl_ha",
-      extra_params: index_params,
+      metric_type: "IP",
+      index_type: "IVF_SQ8",
+      params: { nlist: 128 },
     });
 
     // await milvusClient.loadCollectionSync({
