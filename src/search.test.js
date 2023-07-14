@@ -99,7 +99,7 @@ beforeAll(async () => {
         //   description: "Metric Spaces Indexing",
         // },
         {
-          name: "id",
+          name: "hash_id",
           data_type: 21, //DataType.VarChar
           max_length: 500,
           description: "${imdbID}/${fileName}/${time}",
@@ -121,7 +121,7 @@ beforeAll(async () => {
       collection_name: "shotit",
       fields_data: [
         {
-          id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
+          hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
           cl_ha: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
@@ -152,7 +152,7 @@ beforeAll(async () => {
           primary_key: 3694,
         },
         {
-          id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/279.5000`,
+          hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/279.5000`,
           cl_ha: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
