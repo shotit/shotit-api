@@ -5,7 +5,7 @@ import { createClient } from "redis";
 import fetch from "node-fetch";
 import fs from "fs-extra";
 import app from "./app.js";
-import { MilvusClient } from "@zilliz/milvus2-sdk-node";
+import { MilvusClient, DataType, MetricType, IndexType } from "@zilliz/milvus2-sdk-node";
 
 const {
   SOLA_DB_HOST,
@@ -89,7 +89,7 @@ beforeAll(async () => {
         {
           name: "cl_ha",
           description: "Dynamic fields for LIRE Solr",
-          data_type: 101, // DataType.FloatVector
+          data_type: DataType.FloatVector,
           dim: 100,
         },
         // {
@@ -99,14 +99,14 @@ beforeAll(async () => {
         //   description: "Metric Spaces Indexing",
         // },
         {
-          name: "id",
-          data_type: 21, //DataType.VarChar
+          name: "hash_id",
+          data_type: DataType.VarChar,
           max_length: 500,
           description: "${imdbID}/${fileName}/${time}",
         },
         {
           name: "primary_key",
-          data_type: 5, //DataType.Int64
+          data_type: DataType.Int64,
           is_primary_key: true,
           description: "Primary Key",
         },
@@ -121,7 +121,7 @@ beforeAll(async () => {
       collection_name: "shotit",
       fields_data: [
         {
-          id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
+          hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
           cl_ha: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
@@ -152,7 +152,7 @@ beforeAll(async () => {
           primary_key: 3694,
         },
         {
-          id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/279.5000`,
+          hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/279.5000`,
           cl_ha: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
@@ -187,16 +187,12 @@ beforeAll(async () => {
 
     await milvusClient.flushSync({ collection_names: ["shotit"] });
 
-    const index_params = {
-      metric_type: "IP",
-      index_type: "IVF_SQ8",
-      params: JSON.stringify({ nlist: 128 }),
-    };
-
     await milvusClient.createIndex({
       collection_name: "shotit",
       field_name: "cl_ha",
-      extra_params: index_params,
+      metric_type: MetricType.IP,
+      index_type: IndexType.IVF_SQ8,
+      params: { nlist: 128 },
     });
 
     // await milvusClient.loadCollectionSync({

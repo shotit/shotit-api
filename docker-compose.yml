@@ -37,7 +37,7 @@ services:
 
   searcher:
     container_name: shotit-searcher
-    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.3
+    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.10
     restart: unless-stopped
     ports:
       - 19531:19531
