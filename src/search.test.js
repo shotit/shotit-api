@@ -5,7 +5,7 @@ import { createClient } from "redis";
 import fetch from "node-fetch";
 import fs from "fs-extra";
 import app from "./app.js";
-import { MilvusClient } from "@zilliz/milvus2-sdk-node";
+import { MilvusClient, DataType, MetricType, IndexType } from "@zilliz/milvus2-sdk-node";
 
 const {
   SOLA_DB_HOST,
@@ -89,7 +89,7 @@ beforeAll(async () => {
         {
           name: "cl_ha",
           description: "Dynamic fields for LIRE Solr",
-          data_type: 101, // DataType.FloatVector
+          data_type: DataType.FloatVector,
           dim: 100,
         },
         // {
@@ -100,13 +100,13 @@ beforeAll(async () => {
         // },
         {
           name: "hash_id",
-          data_type: 21, //DataType.VarChar
+          data_type: DataType.VarChar,
           max_length: 500,
           description: "${imdbID}/${fileName}/${time}",
         },
         {
           name: "primary_key",
-          data_type: 5, //DataType.Int64
+          data_type: DataType.Int64,
           is_primary_key: true,
           description: "Primary Key",
         },
@@ -190,8 +190,8 @@ beforeAll(async () => {
     await milvusClient.createIndex({
       collection_name: "shotit",
       field_name: "cl_ha",
-      metric_type: "IP",
-      index_type: "IVF_SQ8",
+      metric_type: MetricType.IP,
+      index_type: IndexType.IVF_SQ8,
       params: { nlist: 128 },
     });
 
