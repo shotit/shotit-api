@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import getSolrCoreList from "../lib/get-solr-core-list.js";
+import os from "os";
 
 const { TRACE_ALGO, SOLA_SOLR_LIST } = process.env;
 
@@ -70,19 +71,23 @@ const lookForLoadJobs = async (knex, workerPool, ws) => {
   mutexB = 1; // lock mutexB
   const rows = await knex(TRACE_ALGO).where("status", "HASHED");
   if (rows.length) {
-    const file = rows[0].path;
-    await knex(TRACE_ALGO).where("path", file).update({ status: "LOADING" });
-    workerPool.set(ws, { status: "BUSY", type: "load", file });
-    let selectedCore = "";
-    if (rows.length < getSolrCoreList().length) {
-      console.log("Finding least populated core");
-      selectedCore = await getLeastPopulatedCore();
-    } else {
-      console.log("Choosing next core (round-robin)");
-      selectedCore = selectCore.next().value;
+    // Take full advantage of cpus; let loader fly
+    const files = rows.slice(0, os.cpus().length);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i].path;
+      await knex(TRACE_ALGO).where("path", file).update({ status: "LOADING" });
+      workerPool.set(ws, { status: "BUSY", type: "load", file });
+      let selectedCore = "";
+      if (rows.length < getSolrCoreList().length) {
+        console.log("Finding least populated core");
+        selectedCore = await getLeastPopulatedCore();
+      } else {
+        console.log("Choosing next core (round-robin)");
+        selectedCore = selectCore.next().value;
+      }
+      console.log(`Loading ${file} to ${selectedCore}`);
+      ws.send(JSON.stringify({ file, core: selectedCore }));
     }
-    console.log(`Loading ${file} to ${selectedCore}`);
-    ws.send(JSON.stringify({ file, core: selectedCore }));
   } else {
     workerPool.set(ws, { status: "READY", type: "load", file: "" });
   }
