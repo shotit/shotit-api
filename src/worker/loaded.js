@@ -9,7 +9,9 @@ export default async (req, res) => {
   const { imdbID, filename } = req.params;
   console.log(`Loaded ${imdbID}/${filename}`);
   await knex(TRACE_ALGO).where("path", `${imdbID}/${filename}`).update({ status: "LOADED" });
-  await sendWorkerJobs(req.app.locals.knex, req.app.locals.workerPool);
+  if (req.headers["x-trunk-load"] === "true") {
+    await sendWorkerJobs(req.app.locals.knex, req.app.locals.workerPool);
+  }
   res.sendStatus(204);
 
   if (TELEGRAM_ID && TELEGRAM_URL) {
