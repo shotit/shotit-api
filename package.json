@@ -1,6 +1,6 @@
 {
   "name": "shotit-api",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "The ultimate brain of shotit, in charge of task coordination",
   "main": "server.js",
   "type": "module",
