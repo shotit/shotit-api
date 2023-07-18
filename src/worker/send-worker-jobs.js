@@ -86,7 +86,11 @@ const lookForLoadJobs = async (knex, workerPool, ws) => {
         selectedCore = selectCore.next().value;
       }
       console.log(`Loading ${file} to ${selectedCore}`);
-      ws.send(JSON.stringify({ file, core: selectedCore }));
+      if (i === 0) {
+        ws.send(JSON.stringify({ trunk: "true", file, core: selectedCore }));
+      } else {
+        ws.send(JSON.stringify({ trunk: "false", file, core: selectedCore }));
+      }
     }
   } else {
     workerPool.set(ws, { status: "READY", type: "load", file: "" });
