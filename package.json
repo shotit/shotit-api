@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@soruly/opencv4nodejs-prebuilt": "^6.0.2",
-    "@zilliz/milvus2-sdk-node": "2.2.19",
+    "@zilliz/milvus2-sdk-node": "2.2.21",
     "aniep": "^0.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
