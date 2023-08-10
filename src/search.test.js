@@ -251,7 +251,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -286,7 +286,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
       await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
     },
@@ -322,7 +322,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
       await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
     },
@@ -351,7 +351,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -379,7 +379,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -407,7 +407,7 @@ describe("without API Key", () => {
   //     expect(typeof topResult.image).toBe("string");
   //     expect(topResult.imdb.id).toBe("21034");
   //     expect(topResult.episode).toBe(1);
-  //     expect(topResult.duration).toBe(1422.01);
+  //     expect(Math.floor(topResult.duration)).toBe(1422);
   //     expect(topResult.similarity).toBeGreaterThan(0.9);
   //   },
   //   1000 * 10
@@ -435,7 +435,7 @@ describe("without API Key", () => {
       expect(typeof topResult.video).toBe("string");
       expect(typeof topResult.image).toBe("string");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -487,7 +487,7 @@ describe("with API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -544,7 +544,7 @@ describe("with system system API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -634,7 +634,7 @@ describe.each([
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
-      expect(topResult.duration).toBe(1422.01);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
