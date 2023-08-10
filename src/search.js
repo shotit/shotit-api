@@ -346,7 +346,7 @@ export default async (req, res) => {
 
   result = result
     // .reduce((list, { d, hash_id }) => {
-    .reduce((list, { score: d, hash_id }) => {
+    .reduce((list, { score: d, hash_id, duration }) => {
       // merge nearby results within 5 seconds in the same filename
       const imdb_id = String(hash_id.split("/")[0]);
       const filename = hash_id.split("/")[1];
@@ -362,6 +362,7 @@ export default async (req, res) => {
           imdb_id,
           filename,
           t,
+          duration,
           from: t,
           to: t,
           d,
@@ -380,7 +381,7 @@ export default async (req, res) => {
 
   const window = 60 * 60; // 3600 seconds
   const now = ((Date.now() / 1000 / window) | 0) * window + window;
-  result = result.map(({ imdb_id, filename, t, from, to, d }) => {
+  result = result.map(({ imdb_id, filename, t, duration, from, to, d }) => {
     const mid = from + (to - from) / 2;
     const videoToken = crypto
       .createHash("sha1")
@@ -397,6 +398,7 @@ export default async (req, res) => {
       imdb: imdb_id,
       filename,
       episode: aniep(filename),
+      duration,
       from,
       to,
       // similarity: (100 - d) / 100,
