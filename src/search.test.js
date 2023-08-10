@@ -105,6 +105,11 @@ beforeAll(async () => {
           description: "${imdbID}/${fileName}/${time}",
         },
         {
+          name: "duration",
+          data_type: DataType.Float,
+          description: "Video duration of the given video file",
+        },
+        {
           name: "primary_key",
           data_type: DataType.Int64,
           is_primary_key: true,
@@ -149,6 +154,7 @@ beforeAll(async () => {
             0.07166414845048348, 0.14825548206146674, 0.10861803715423188, 0.09339655442625933,
             0.11284133872037455, 0.15155493641001572, 0.17421118960338527, 0.1372573008996369,
           ],
+          duration: 1422.01,
           primary_key: 3694,
         },
         {
@@ -180,6 +186,7 @@ beforeAll(async () => {
             0.07166414845048348, 0.14825548206146674, 0.10861803715423188, 0.09339655442625933,
             0.11284133872037455, 0.15155493641001572, 0.17421118960338527, 0.1372573008996369,
           ],
+          duration: 1422.01,
           primary_key: 3695,
         },
       ],
@@ -236,6 +243,7 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -243,6 +251,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -269,6 +278,7 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -276,6 +286,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
       await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
     },
@@ -303,6 +314,7 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -310,6 +322,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
       await fs.remove("32B15UXxymfSMwKGTObY5e.jpg");
     },
@@ -330,6 +343,7 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -337,6 +351,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -356,6 +371,7 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -363,6 +379,7 @@ describe("without API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -382,6 +399,7 @@ describe("without API Key", () => {
   //     expect(typeof topResult.imdb).toBe("object");
   //     expect(typeof topResult.filename).toBe("string");
   //     expect(typeof topResult.episode).toBe("number");
+  //     expect(typeof topResult.duration).toBe("number");
   //     expect(typeof topResult.from).toBe("number");
   //     expect(typeof topResult.to).toBe("number");
   //     expect(typeof topResult.similarity).toBe("number");
@@ -389,6 +407,7 @@ describe("without API Key", () => {
   //     expect(typeof topResult.image).toBe("string");
   //     expect(topResult.imdb.id).toBe("21034");
   //     expect(topResult.episode).toBe(1);
+  //     expect(Math.floor(topResult.duration)).toBe(1422);
   //     expect(topResult.similarity).toBeGreaterThan(0.9);
   //   },
   //   1000 * 10
@@ -409,12 +428,14 @@ describe("without API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
       expect(typeof topResult.video).toBe("string");
       expect(typeof topResult.image).toBe("string");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -458,6 +479,7 @@ describe("with API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -465,6 +487,7 @@ describe("with API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -513,6 +536,7 @@ describe("with system system API Key", () => {
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -520,6 +544,7 @@ describe("with system system API Key", () => {
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
@@ -601,6 +626,7 @@ describe.each([
       expect(typeof topResult.imdb).toBe("string");
       expect(typeof topResult.filename).toBe("string");
       expect(typeof topResult.episode).toBe("number");
+      expect(typeof topResult.duration).toBe("number");
       expect(typeof topResult.from).toBe("number");
       expect(typeof topResult.to).toBe("number");
       expect(typeof topResult.similarity).toBe("number");
@@ -608,6 +634,7 @@ describe.each([
       expect(typeof topResult.image).toBe("string");
       expect(topResult.imdb).toBe("21034");
       expect(topResult.episode).toBe(1);
+      expect(Math.floor(topResult.duration)).toBe(1422);
       expect(topResult.similarity).toBeGreaterThan(0.9);
     },
     1000 * 10
