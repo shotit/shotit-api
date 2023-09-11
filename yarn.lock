@@ -1517,10 +1517,10 @@ expect@^29.6.1:
     jest-message-util "^29.6.1"
     jest-util "^29.6.1"
 
-express-rate-limit@^6.7.1:
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-6.7.1.tgz#ca93de8eaa25878b539d478948fc94592742e526"
-  integrity sha512-eH4VgI64Nowd2vC5Xylx0lLYovWIp2gRFtTklWDbhSDydGAPQUjvr1B7aQ2/ZADrAi6bJ51qSizKIXWAZ1WCQw==
+express-rate-limit@^6.11.1:
+  version "6.11.1"
+  resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-6.11.1.tgz#52e05c5d379cd5d06ae29665862436eb712e414a"
+  integrity sha512-8+UpWtQY25lJaa4+3WxDBGDcAu4atcTruSs3QSL5VPEplYy6kmk84wutG9rUkkK5LmMQQ7TFHWLZYITwVNbbEg==
 
 express@^4.18.2:
   version "4.18.2"
