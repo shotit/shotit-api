@@ -4,7 +4,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/shotit/shotit-api/docker-image.yml?style=flat-square)](https://github.com/shotit/shotit-api/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/shotit/shotit-api?style=flat-square&token=8C25WLSEDJ)](https://codecov.io/gh/shotit/shotit-api)
 [![Docker](https://img.shields.io/docker/pulls/lesliewong007/shotit-api?style=flat-square)](https://hub.docker.com/r/lesliewong007/shotit-api)
-[![Docker Image Size](https://img.shields.io/docker/image-size/lesliewong007/shotit-api/v0.9.8?style=flat-square)](https://hub.docker.com/r/lesliewong007/shotit-api)
+[![Docker Image Size](https://img.shields.io/docker/image-size/lesliewong007/shotit-api/v0.9.9?style=flat-square)](https://hub.docker.com/r/lesliewong007/shotit-api)
 
 The ultimate brain of [shotit](https://github.com/shotit/shotit), in charge of task coordination.
 
