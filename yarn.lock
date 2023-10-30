@@ -816,10 +816,10 @@ accepts@~1.3.8:
     mime-types "~2.1.34"
     negotiator "0.6.3"
 
-aniep@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/aniep/-/aniep-0.5.1.tgz#b0ac6b0963a239912135ea6d606887c69b86b53d"
-  integrity sha512-YqkYqrCHbhNOjfre8baGbh5FKlvS4T5G1HhGtU0mB5x4U1Sfg0/9J7Umw+4AghN6Xg/NVLmsGlhhY8aBakoa+Q==
+aniep@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/aniep/-/aniep-0.6.0.tgz#cbb1510b10249341cfcd29f6d14897faeeb41a38"
+  integrity sha512-mf8p+TPZG8T6vLLSpKPwVL3CyUA+RqB4qbov0vWYgQdUhtyvKHHQk7W5SO3iPB+DXy8NH8UYXtW6kEGK3neZDA==
 
 ansi-escapes@^4.2.1:
   version "4.3.2"
