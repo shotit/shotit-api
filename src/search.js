@@ -6,7 +6,7 @@ import fetch from "node-fetch";
 import fs from "fs-extra";
 import FormData from "form-data";
 import aniep from "aniep";
-import http from "node:http";
+import https from "node:https";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
@@ -190,7 +190,7 @@ export default async (req, res) => {
         ? req.query.url
         : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`,
       {
-        agent: new http.Agent({
+        agent: new https.Agent({
           family: isIpv6 ? 6 : 4,
         }),
       }
