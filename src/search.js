@@ -181,7 +181,11 @@ export default async (req, res) => {
         ? req.query.url
         : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`,
       {
-        family: (await publicIpv6()) ? 6 : 4,
+        family: (await publicIpv6().catch((e) => {
+          console.log(e);
+        }))
+          ? 6
+          : 4,
       }
     ).catch((e) => {
       console.log(e);
