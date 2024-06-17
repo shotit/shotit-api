@@ -166,6 +166,14 @@ export default async (req, res) => {
       });
     }
 
+    let isIpv6 = false;
+    try {
+      isIpv6 = Boolean(await publicIpv6());
+    } catch (error) {
+      console.log(error);
+      isIpv6 = false;
+    }
+
     const response = await fetch(
       [
         // "api.telegram.org",
@@ -181,11 +189,7 @@ export default async (req, res) => {
         ? req.query.url
         : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`,
       {
-        family: (await publicIpv6().catch((e) => {
-          console.log(e);
-        }))
-          ? 6
-          : 4,
+        family: isIpv6 ? 6 : 4,
       }
     ).catch((e) => {
       console.log(e);
