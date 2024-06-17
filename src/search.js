@@ -53,6 +53,14 @@ const search = async (image) => {
   return [response];
 };
 
+let isIpv6 = false;
+try {
+  isIpv6 = Boolean(await publicIpv6());
+} catch (error) {
+  console.log(error);
+  isIpv6 = false;
+}
+
 const logAndDequeue = async (knex, redis, uid, priority, status, searchTime, accuracy) => {
   if (status === 200) {
     const searchCountCache = await knex("search_count").where({ uid: `${uid}` });
@@ -164,14 +172,6 @@ export default async (req, res) => {
       return res.status(400).json({
         error: `Invalid image url ${req.query.url}`,
       });
-    }
-
-    let isIpv6 = false;
-    try {
-      isIpv6 = Boolean(await publicIpv6());
-    } catch (error) {
-      console.log(error);
-      isIpv6 = false;
     }
 
     const response = await fetch(
