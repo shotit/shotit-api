@@ -8,7 +8,7 @@ import FormData from "form-data";
 import aniep from "aniep";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
-import { publicIpv6 } from 'public-ip';
+import { publicIpv6 } from "public-ip";
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
 // const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
@@ -179,10 +179,11 @@ export default async (req, res) => {
         "media.trace.moe",
       ].includes(new URL(req.query.url).hostname)
         ? req.query.url
-        : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`
-    , {
-      family: (await publicIpv6()) ? 6 : 4
-    }).catch((e) => {
+        : `https://trace.moe/image-proxy?url=${encodeURIComponent(req.query.url)}`,
+      {
+        family: (await publicIpv6()) ? 6 : 4,
+      }
+    ).catch((e) => {
       console.log(e);
       return { status: 400 };
     });
