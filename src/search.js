@@ -10,7 +10,7 @@ import https from "node:https";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
-const core = require('@actions/core');
+import core from "@actions/core";
 
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
