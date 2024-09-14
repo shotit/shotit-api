@@ -212,6 +212,7 @@ export default async (req, res) => {
     searchFile = req.rawBody;
   } else if (req.method === "HEAD") {
     await logAndDequeue(knex, redis, uid, priority, 204);
+    // Note: the client side can not recive the json object because of HEAD
     return res.status(204).json({
       error: "HEAD method acknowledged",
     });
