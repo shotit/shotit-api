@@ -10,6 +10,7 @@ import https from "node:https";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
+
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
 // const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
@@ -209,6 +210,12 @@ export default async (req, res) => {
     searchFile = req.files[0].buffer;
   } else if (req.rawBody?.length) {
     searchFile = req.rawBody;
+  } else if (req.method === "HEAD") {
+    await logAndDequeue(knex, redis, uid, priority, 204);
+    // Note: the client side can not recive the json object because of HEAD
+    return res.status(204).json({
+      error: "HEAD method acknowledged",
+    });
   } else {
     await logAndDequeue(knex, redis, uid, priority, 405);
     return res.status(405).json({

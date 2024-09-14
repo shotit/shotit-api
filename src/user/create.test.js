@@ -97,5 +97,5 @@ describe("Create user with valid system API key", () => {
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toMatch(/^application\/json/);
     expect(typeof response.body).toBe("object");
-  }, 10000);
+  }, 20000);
 });

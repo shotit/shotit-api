@@ -607,6 +607,14 @@ describe("invalid input", () => {
     },
     1000 * 10
   );
+  test(
+    "/search only by HEAD",
+    async () => {
+      const response = await request(app).head("/search");
+      expect(response.statusCode).toBe(204);
+    },
+    1000 * 10
+  );
 });
 
 describe.each([
