@@ -209,6 +209,11 @@ export default async (req, res) => {
     searchFile = req.files[0].buffer;
   } else if (req.rawBody?.length) {
     searchFile = req.rawBody;
+  } else if (req.method === "HEAD") {
+    await logAndDequeue(knex, redis, uid, priority, 204);
+    return res.status(204).json({
+      error: "HEAD method acknowledged",
+    });
   } else {
     await logAndDequeue(knex, redis, uid, priority, 405);
     return res.status(405).json({
