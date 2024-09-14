@@ -10,7 +10,6 @@ import https from "node:https";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
-import core from "@actions/core";
 
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
@@ -57,21 +56,11 @@ const search = async (image) => {
 };
 
 let isIpv6 = false;
-// skip the github runner environemnt
-const runnerOs = core.getInput('GITHUB_RUNNER_OS');
-const runnerUser = core.getInput('GITHUB_RUNNER_USER');
-const workspace = core.getInput('GITHUB_WORKSPACE');
-
-console.log(`Runner OS: ${runnerOs}`);
-console.log(`Runner User: ${runnerUser}`);
-console.log(`Workspace: ${workspace}`);
-if (!runnerOs) {
-  try {
-    isIpv6 = Boolean(await publicIpv6());
-  } catch (error) {
-    console.log(error);
-    isIpv6 = false;
-  }
+try {
+  isIpv6 = Boolean(await publicIpv6());
+} catch (error) {
+  console.log(error);
+  isIpv6 = false;
 }
 
 const logAndDequeue = async (knex, redis, uid, priority, status, searchTime, accuracy) => {

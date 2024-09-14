@@ -34,7 +34,6 @@
     "supertest": "^6.3.3"
   },
   "dependencies": {
-    "@actions/core": "^1.10.1",
     "@soruly/opencv4nodejs-prebuilt": "^6.0.2",
     "@zilliz/milvus2-sdk-node": "2.2.19",
     "aniep": "^0.6.0",
