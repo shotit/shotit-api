@@ -10,7 +10,8 @@ import https from "node:https";
 import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
-const runnerOs = process.env.GITHUB_RUNNER_OS;
+const core = require('@actions/core');
+
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
 // const { TRACE_MEDIA_URL, TRACE_MEDIA_SALT, TRACE_ACCURACY = 1 } = process.env;
@@ -57,7 +58,13 @@ const search = async (image) => {
 
 let isIpv6 = false;
 // skip the github runner environemnt
-console.log(runnerOs);
+const runnerOs = core.getInput('GITHUB_RUNNER_OS');
+const runnerUser = core.getInput('GITHUB_RUNNER_USER');
+const workspace = core.getInput('GITHUB_WORKSPACE');
+
+console.log(`Runner OS: ${runnerOs}`);
+console.log(`Runner User: ${runnerUser}`);
+console.log(`Workspace: ${workspace}`);
 if (!runnerOs) {
   try {
     isIpv6 = Boolean(await publicIpv6());
