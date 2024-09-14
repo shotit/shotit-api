@@ -57,6 +57,7 @@ const search = async (image) => {
 
 let isIpv6 = false;
 // skip the github runner environemnt
+console.log(runnerOs);
 if (!runnerOs) {
   try {
     isIpv6 = Boolean(await publicIpv6());
