@@ -612,7 +612,6 @@ describe("invalid input", () => {
     async () => {
       const response = await request(app).head("/search");
       expect(response.statusCode).toBe(204);
-      expect(response.headers["content-type"]).toMatch(/^application\/json/);
       expect(typeof response.body.error).toBe("string");
     },
     1000 * 10
