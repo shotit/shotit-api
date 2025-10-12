@@ -20,6 +20,9 @@ const {
   MILVUS_URL,
 } = process.env;
 
+const ALGO_hi = `${TRACE_ALGO}_hi`;
+const ALGO_ha = `${TRACE_ALGO}_ha`;
+
 beforeAll(async () => {
   app.locals.redis = createClient({
     url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
@@ -87,13 +90,13 @@ beforeAll(async () => {
       description: "Shotit Index Data Collection",
       fields: [
         {
-          name: "cl_ha",
+          name: `${ALGO_ha}`,
           description: "Dynamic fields for LIRE Solr",
           data_type: DataType.FloatVector,
           dim: 100,
         },
         // {
-        //   name: "cl_hi",
+        //   name: `${ALGO_hi}`,
         //   data_type: 21, //DataType.VarChar
         //   max_length: 200,
         //   description: "Metric Spaces Indexing",
@@ -127,7 +130,7 @@ beforeAll(async () => {
       fields_data: [
         {
           hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/278.5000`,
-          cl_ha: [
+          [ALGO_ha]: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
             0.06202974175272051, 0.15437047078744418, 0.1393249589580609, 0.13518964284121285,
@@ -159,7 +162,7 @@ beforeAll(async () => {
         },
         {
           hash_id: `21034/Gochuumon wa Usagi Desuka 2 - 01 (BD 1280x720 x264 AAC).mp4/279.5000`,
-          cl_ha: [
+          [ALGO_ha]: [
             0.04412470282126147, 0.14904735110511852, 0.023052187715195425, 0.08121056969895182,
             0.11090565883589248, 0.03479824519602973, 0.07078429395753709, 0.10250304842825446,
             0.06202974175272051, 0.15437047078744418, 0.1393249589580609, 0.13518964284121285,
@@ -196,7 +199,7 @@ beforeAll(async () => {
 
     await milvusClient.createIndex({
       collection_name: "shotit",
-      field_name: "cl_ha",
+      field_name: `${ALGO_ha}`,
       metric_type: MetricType.IP,
       index_type: IndexType.IVF_SQ8,
       params: { nlist: 128 },
