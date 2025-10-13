@@ -39,7 +39,7 @@ export default async (req, res) => {
     const milvusClient = new MilvusClient(MILVUS_URL);
 
     const collectionStatistics = await milvusClient.getCollectionStatistics({
-      collection_name: "shotit",
+      collection_name: `shotit_${TRACE_ALGO}`,
     });
     const rowCount = collectionStatistics?.data.row_count;
 
@@ -59,7 +59,7 @@ export default async (req, res) => {
 
     const collectionStatus = await milvusClient.showCollections({
       type: 1,
-      collection_names: ["shotit"],
+      collection_names: [`shotit_${TRACE_ALGO}`],
     });
     const lastModified = Number(collectionStatus?.data[0].timestamp);
 
