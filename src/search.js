@@ -6,8 +6,9 @@ import fetch from "node-fetch";
 import fs from "fs-extra";
 import FormData from "form-data";
 import aniep from "aniep";
+import sharp from "sharp";
 import https from "node:https";
-import cv from "@soruly/opencv4nodejs-prebuilt";
+// import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
 import { publicIpv6 } from "public-ip";
 
@@ -97,6 +98,82 @@ const logAndDequeue = async (knex, redis, uid, priority, status, searchTime, acc
   if (q < 0) {
     await redis.del(`q:${priority}`);
   }
+};
+
+const extractImageByFFmpeg = async (searchFile) => {
+  const tempFilePath = path.join(os.tmpdir(), `shotit-search-${process.hrtime().join("")}`);
+  await fs.writeFile(tempFilePath, searchFile);
+  const ffmpeg = child_process.spawnSync("ffmpeg", [
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-nostats",
+    "-y",
+    "-i",
+    tempFilePath,
+    "-ss",
+    "00:00:00",
+    "-map_metadata",
+    "-1",
+    "-vf",
+    "scale=320:-2",
+    "-c:v",
+    "mjpeg",
+    "-vframes",
+    "1",
+    "-f",
+    "image2pipe",
+    "pipe:1",
+  ]);
+  await fs.rm(tempFilePath, { force: true });
+  return ffmpeg.stdout;
+};
+
+// Source: https://github.com/soruly/trace.moe-api/blob/master/src/search.js
+const cutBorders = async (imageBuffer) => {
+  // normalize brightness -> blur away UI controls -> trim with certain dark threshold
+  const { info } = await sharp(await sharp(imageBuffer).normalize().dilate(2).toBuffer())
+    .trim({ background: "black", threshold: 30 })
+    .toBuffer({ resolveWithObject: true });
+
+  const trimmedTop = Math.abs(info.trimOffsetTop);
+  const trimmedLeft = Math.abs(info.trimOffsetLeft);
+  const newWidth = info.width;
+  const newHeight = info.height;
+  if (
+    Math.abs(newWidth / newHeight - 16 / 9) < 0.05 ||
+    Math.abs(newWidth / newHeight - 4 / 3) < 0.05
+  ) {
+    // if detected area is near 16:9 or 4:3, crop as detected
+    return await sharp(imageBuffer)
+      .extract({
+        left: trimmedLeft,
+        top: trimmedTop,
+        width: newWidth,
+        height: newHeight,
+      })
+      .jpeg()
+      .toBuffer();
+  } else if (Math.abs(newWidth / newHeight - 21 / 9) < 0.1) {
+    // if detected area is near 21:9
+    const { width, height } = await sharp(imageBuffer).metadata();
+    if ((width - newWidth) / width > 0.05 || (height - newHeight) / height > 0.05) {
+      // and detected area is smaller than original, crop and fill it back to 16:9
+      return await sharp(imageBuffer)
+        .extract({
+          left: trimmedLeft,
+          top: trimmedTop,
+          width: newWidth,
+          height: newHeight,
+        })
+        .resize({ width: 320, height: 180, fit: "contain" })
+        .jpeg()
+        .toBuffer();
+    }
+  }
+  // if detected area is not standard aspect ratio, do no crop
+  // if detected area is 21:9 and original is also 21:9, do no crop
+  return sharp(imageBuffer).jpeg().toBuffer();
 };
 
 export default async (req, res) => {
@@ -222,89 +299,74 @@ export default async (req, res) => {
       error: "Method Not Allowed",
     });
   }
-  const tempFilePath = path.join(os.tmpdir(), `queryFile${process.hrtime().join("")}`);
-  await fs.outputFile(tempFilePath, searchFile);
-  const ffmpeg = child_process.spawnSync("ffmpeg", [
-    "-hide_banner",
-    "-loglevel",
-    "error",
-    "-nostats",
-    "-y",
-    "-i",
-    tempFilePath,
-    "-ss",
-    "00:00:00",
-    "-map_metadata",
-    "-1",
-    "-vf",
-    "scale=320:-2",
-    "-c:v",
-    "mjpeg",
-    "-vframes",
-    "1",
-    "-f",
-    "image2pipe",
-    "pipe:1",
-  ]);
-  await fs.remove(tempFilePath);
-  if (!ffmpeg.stdout.length) {
+
+  const searchImagePNG = await sharp(searchFile)
+    .resize({ width: 320, height: 240, fit: "inside" })
+    .toBuffer()
+    .catch(async () => await extractImageByFFmpeg(searchFile));
+
+  if (!searchImagePNG.length) {
     await logAndDequeue(knex, redis, uid, priority, 400);
     return res.status(400).json({
-      error: `Failed to process image. ${ffmpeg.stderr.toString()}`,
+      error: "Failed to process image",
     });
   }
-  let searchImage = ffmpeg.stdout;
 
-  if ("cutBorders" in req.query) {
-    // auto black border cropping
-    try {
-      const image = cv.imdecode(searchImage);
-      const [height, width] = image.sizes;
-      // Find the possible rectangles
-      const contours = image
-        .bgrToGray()
-        .threshold(4, 255, cv.THRESH_BINARY) // low enough so dark background is not cut away
-        .findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+  const searchImage =
+    "cutBorders" in req.query
+      ? await cutBorders(searchImagePNG)
+      : await sharp(searchImagePNG).jpeg().toBuffer();
 
-      let {
-        x,
-        y,
-        width: w,
-        height: h,
-      } = contours.length
-        ? contours
-            .sort((c0, c1) => c1.area - c0.area)[0] // Find the largest rectangle
-            .boundingRect()
-        : { x: 0, y: 0, width, height };
+  // if ("cutBorders" in req.query) {
+  // auto black border cropping
+  // try {
+  //   const image = cv.imdecode(searchImage);
+  //   const [height, width] = image.sizes;
+  //   // Find the possible rectangles
+  //   const contours = image
+  //     .bgrToGray()
+  //     .threshold(4, 255, cv.THRESH_BINARY) // low enough so dark background is not cut away
+  //     .findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
-      if (x !== 0 || y !== 0 || w !== width || h !== height) {
-        if (w > 0 && h > 0 && w / h < 16 / 9 && w / h >= 1.6) {
-          // if detected area is slightly larger than 16:9 (e.g. 16:10)
-          const newHeight = Math.round((w / 16) * 9); // assume it is 16:9
-          y = Math.round(y - (newHeight - h) / 2);
-          h = newHeight;
-          // cut 1px more for anti-aliasing
-          h = h - 1;
-          y = y + 1;
-        }
-        // ensure the image has correct dimensions
-        y = y <= 0 ? 0 : y;
-        x = x <= 0 ? 0 : x;
-        w = w <= 1 ? 1 : w;
-        h = h <= 1 ? 1 : h;
-        w = w >= width ? width : w;
-        h = h >= height ? height : h;
+  //   let {
+  //     x,
+  //     y,
+  //     width: w,
+  //     height: h,
+  //   } = contours.length
+  //     ? contours
+  //         .sort((c0, c1) => c1.area - c0.area)[0] // Find the largest rectangle
+  //         .boundingRect()
+  //     : { x: 0, y: 0, width, height };
 
-        searchImage = cv.imencode(".jpg", image.getRegion(new cv.Rect(x, y, w, h)));
-      }
-    } catch (e) {
-      console.log(e);
-      await logAndDequeue(knex, redis, uid, priority, 400);
-      return res.status(400).json({
-        error: "OpenCV: Failed to detect and cut borders",
-      });
-    }
-  }
+  //   if (x !== 0 || y !== 0 || w !== width || h !== height) {
+  //     if (w > 0 && h > 0 && w / h < 16 / 9 && w / h >= 1.6) {
+  //       // if detected area is slightly larger than 16:9 (e.g. 16:10)
+  //       const newHeight = Math.round((w / 16) * 9); // assume it is 16:9
+  //       y = Math.round(y - (newHeight - h) / 2);
+  //       h = newHeight;
+  //       // cut 1px more for anti-aliasing
+  //       h = h - 1;
+  //       y = y + 1;
+  //     }
+  //     // ensure the image has correct dimensions
+  //     y = y <= 0 ? 0 : y;
+  //     x = x <= 0 ? 0 : x;
+  //     w = w <= 1 ? 1 : w;
+  //     h = h <= 1 ? 1 : h;
+  //     w = w >= width ? width : w;
+  //     h = h >= height ? height : h;
+
+  //     searchImage = cv.imencode(".jpg", image.getRegion(new cv.Rect(x, y, w, h)));
+  //   }
+  // } catch (e) {
+  //   console.log(e);
+  //   await logAndDequeue(knex, redis, uid, priority, 400);
+  //   return res.status(400).json({
+  //     error: "OpenCV: Failed to detect and cut borders",
+  //   });
+  // }
+  // }
 
   let candidates = 1000000;
   const startTime = performance.now();
