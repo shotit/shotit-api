@@ -70,7 +70,7 @@ jobs:
           --network $CONTAINER_NETWORK \
           -e MINIO_ACCESS_KEY=minioadmin \
           -e MINIO_SECRET_KEY=minioadmin \
-          minio/minio:RELEASE.2022-10-24T18-35-07 \
+          minio/minio:RELEASE.2022-10-24T18-35-07Z \
           minio server /minio_data
       - name: Docker run milvus-standalone
         env:
