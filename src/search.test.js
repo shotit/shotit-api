@@ -236,7 +236,7 @@ describe("without API Key", () => {
     async () => {
       const response = await request(app)
         .get("/search")
-        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+        .query({ url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg" });
       expect(response.statusCode).toBe(200);
       expect(response.headers["content-type"]).toMatch(/^application\/json/);
       expect(typeof response.body.frameCount).toBe("number");
@@ -263,7 +263,7 @@ describe("without API Key", () => {
     "/search by Form Post",
     async () => {
       if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+        await fetch("https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg")
           .then((e) => e.arrayBuffer())
           .then((arrayBuffer) =>
             fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
@@ -303,7 +303,7 @@ describe("without API Key", () => {
         .set("Content-Type", "image/jpeg")
         .send(
           Buffer.from(
-            await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg").then((e) =>
+            await fetch("https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg").then((e) =>
               e.arrayBuffer()
             )
           )
@@ -336,7 +336,7 @@ describe("without API Key", () => {
     async () => {
       const response = await request(app)
         .get("/search?cutBorders")
-        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+        .query({ url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg" });
       expect(response.statusCode).toBe(200);
       expect(response.headers["content-type"]).toMatch(/^application\/json/);
       expect(typeof response.body.frameCount).toBe("number");
@@ -364,7 +364,7 @@ describe("without API Key", () => {
     async () => {
       const response = await request(app)
         .get("/search?sort")
-        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+        .query({ url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg" });
       expect(response.statusCode).toBe(200);
       expect(response.headers["content-type"]).toMatch(/^application\/json/);
       expect(typeof response.body.frameCount).toBe("number");
@@ -392,7 +392,7 @@ describe("without API Key", () => {
   //   async () => {
   //     const response = await request(app)
   //       .get("/search?imdbInfo")
-  //       .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg" });
+  //       .query({ url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg" });
   //     expect(response.statusCode).toBe(200);
   //     expect(response.headers["content-type"]).toMatch(/^application\/json/);
   //     expect(typeof response.body.frameCount).toBe("number");
@@ -420,7 +420,7 @@ describe("without API Key", () => {
     async () => {
       const response = await request(app)
         .get("/search")
-        .query({ url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg", imdbID: 21034 });
+        .query({ url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg", imdbID: 21034 });
       expect(response.statusCode).toBe(200);
       expect(response.headers["content-type"]).toMatch(/^application\/json/);
       expect(typeof response.body.frameCount).toBe("number");
@@ -448,7 +448,7 @@ describe("without API Key", () => {
     "/search by image concurrency limit",
     async () => {
       if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+        await fetch("https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg")
           .then((e) => e.arrayBuffer())
           .then((arrayBuffer) =>
             fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
@@ -470,7 +470,7 @@ describe("with API Key", () => {
     "/search by image URL with API Key",
     async () => {
       const response = await request(app).get("/search").query({
-        url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
+        url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg",
         key: app.locals.apiKeyTier1,
       });
       expect(response.statusCode).toBe(200);
@@ -502,7 +502,7 @@ describe("with system Tier 9 API Key", () => {
     "/search by image queue limit",
     async () => {
       if (!fs.existsSync("32B15UXxymfSMwKGTObY5e.jpg")) {
-        await fetch("https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg")
+        await fetch("https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg")
           .then((e) => e.arrayBuffer())
           .then((arrayBuffer) =>
             fs.outputFile("32B15UXxymfSMwKGTObY5e.jpg", Buffer.from(arrayBuffer))
@@ -527,7 +527,7 @@ describe("with system system API Key", () => {
     "/search by image URL with API Key",
     async () => {
       const response = await request(app).get("/search").query({
-        url: "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg",
+        url: "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg",
         key: app.locals.apiKeyTier0,
       });
       expect(response.statusCode).toBe(200);
@@ -621,8 +621,8 @@ describe("invalid input", () => {
 });
 
 describe.each([
-  ["16:9 in 16:9,  no border", "https://images.plurk.com/32B15UXxymfSMwKGTObY5e.jpg"],
-  ["16:9 in 16:10, #000 border", "https://images.plurk.com/I7r7frYsuiYcyWTmC8DAL.jpg"],
+  ["16:9 in 16:9,  no border", "https://i.ibb.co/5WTjwPRZ/32-B15-UXxymf-SMw-KGTOb-Y5e.jpg"],
+  ["16:9 in 16:10, #000 border", "https://i.ibb.co/sJD9kMLg/I7r7fr-Ysui-Ycy-WTm-C8-DAL.jpg"],
 ])("%s", (_, url, expected) => {
   test(
     "/search by image URL with cutBorders",
