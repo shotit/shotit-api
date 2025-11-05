@@ -79,12 +79,10 @@ jobs:
           sudo mkdir /tmp/milvus
           docker run -d --name standalone -v /tmp/milvus:/var/lib/milvus \
           --network $CONTAINER_NETWORK \
-          --security-opt seccomp:unconfined \
           -p 19530:19530 -p 9091:9091 \
           -e ETCD_ENDPOINTS=etcd:2379 \
           -e MINIO_ADDRESS=minio:9000 \
-          -e MQ_TYPE=woodpecker \
-          milvusdb/milvus:v2.6.3 \
+          milvusdb/milvus:v2.2.16 \
           milvus run standalone
       - name: Docker run searcher
         env:
@@ -97,7 +95,7 @@ jobs:
           -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
           -e SEARCHER_URL=http://172.17.0.1:19531 \
           -e MILVUS_URL=172.17.0.1:19530 \
-          ghcr.io/shotit/shotit-worker-searcher:v0.9.20
+          ghcr.io/shotit/shotit-worker-searcher:v0.9.21
       - name: Docker run sorter
         env:
           CONTAINER_NETWORK: ${{ job.container.network }}
