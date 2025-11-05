@@ -22,7 +22,7 @@ beforeAll(async () => {
     id: 101,
     email: "test@trace.moe",
     password:
-      "ASSoSAGMqkmaM/db2j2kS4n7jbbKG5C5KDxipQSij5HA/+pm+qYE5WrgZSJ4MAK1ci/2eDBWXafM0H0bTlIKWw==",
+      "Aen/RAPgJH+qWQRVHxa+umFSO/wCS7d4eTlSY+pF6eFa3n83131XSK5zuiu5T9LPzumL/60Wu3syEc1lu6HPLA==",
     api_key: "OwTPRvfpSg5kw1Gjww33ahbA3tEnu0DnseOIcHJt4g",
     tier: 9,
     notes: "Test Account",
