@@ -10,7 +10,7 @@ import sharp from "sharp";
 import https from "node:https";
 // import cv from "@soruly/opencv4nodejs-prebuilt";
 import { performance } from "perf_hooks";
-import { publicIpv6 } from "public-ip";
+// import { publicIpv6 } from "public-ip";
 
 // import getSolrCoreList from "./lib/get-solr-core-list.js";
 
@@ -60,7 +60,8 @@ let isIpv6 = false;
 try {
   isIpv6 = Boolean(await publicIpv6());
 } catch (error) {
-  console.log(error);
+  // console.log(error); // too verbose
+  console.log("isIpv6 false");
   isIpv6 = false;
 }
 

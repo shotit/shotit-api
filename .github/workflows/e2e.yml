@@ -56,7 +56,8 @@ jobs:
           -e ETCD_AUTO_COMPACTION_MODE=revision \
           -e ETCD_AUTO_COMPACTION_RETENTION=1000 \
           -e ETCD_QUOTA_BACKEND_BYTES=4294967296 \
-          quay.io/coreos/etcd:v3.5.5 \
+          -e ETCD_SNAPSHOT_COUNT=50000 \
+          quay.io/coreos/etcd:v3.5.18 \
           etcd -advertise-client-urls=http://127.0.0.1:2379 \
           -listen-client-urls http://0.0.0.0:2379 \
           --data-dir /etcd
@@ -69,7 +70,7 @@ jobs:
           --network $CONTAINER_NETWORK \
           -e MINIO_ACCESS_KEY=minioadmin \
           -e MINIO_SECRET_KEY=minioadmin \
-          minio/minio:RELEASE.2022-03-17T06-34-49Z \
+          minio/minio:RELEASE.2022-10-24T18-35-07Z \
           minio server /minio_data
       - name: Docker run milvus-standalone
         env:
@@ -81,7 +82,7 @@ jobs:
           -p 19530:19530 -p 9091:9091 \
           -e ETCD_ENDPOINTS=etcd:2379 \
           -e MINIO_ADDRESS=minio:9000 \
-          milvusdb/milvus:v2.2.11 \
+          milvusdb/milvus:v2.2.16 \
           milvus run standalone
       - name: Docker run searcher
         env:
@@ -94,7 +95,7 @@ jobs:
           -e SOLA_SOLR_LIST=http://172.17.0.1:8983/solr/ \
           -e SEARCHER_URL=http://172.17.0.1:19531 \
           -e MILVUS_URL=172.17.0.1:19530 \
-          ghcr.io/shotit/shotit-worker-searcher:v0.9.19
+          ghcr.io/shotit/shotit-worker-searcher:v0.9.21
       - name: Docker run sorter
         env:
           CONTAINER_NETWORK: ${{ job.container.network }}

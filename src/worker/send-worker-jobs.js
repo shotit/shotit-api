@@ -71,8 +71,8 @@ const lookForLoadJobs = async (knex, workerPool, ws) => {
   mutexB = 1; // lock mutexB
   const rows = await knex(TRACE_ALGO).where("status", "HASHED");
   if (rows.length) {
-    // Take full advantage of cpus; let loader fly
-    const files = rows.slice(0, os.cpus().length);
+    // Take advantage of cpus; let loader fly (remaining one cpu for other necessary stuff)
+    const files = rows.slice(0, os.cpus().length - 1);
     for (let i = 0; i < files.length; i++) {
       const file = files[i].path;
       await knex(TRACE_ALGO).where("path", file).update({ status: "LOADING" });
