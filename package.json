@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/shotit/shotit-api#readme",
   "devDependencies": {
-    "jest": "^29.6.1",
+    "jest": "^30.2.0",
     "prettier": "^2.8.3",
     "supertest": "^7.1.4"
   },
