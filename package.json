@@ -46,7 +46,7 @@
     "multer": "^2.0.2",
     "mysql": "^2.18.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.10",
+    "nodemailer": "^7.0.11",
     "public-ip": "^6.0.2",
     "redis": "^4.6.7",
     "rss": "^1.2.2",
