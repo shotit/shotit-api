@@ -31,7 +31,7 @@
   "devDependencies": {
     "jest": "^29.6.1",
     "prettier": "^2.8.3",
-    "supertest": "^7.1.4"
+    "supertest": "^7.2.2"
   },
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "2.6.4",
